@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "hndpfont";
+    src: url('./ShiShangZhongHeiJianTi.ttf') format('truetype');
+    /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+}
+
+.hndpfont {
+    font-family: "hndpfont" !important;
+}

@@ -1,0 +1,244 @@
+<template>
+  <el-container>
+    <v-map class="v-map" v-if="compareMapShow" />
+    <v-map2 class="v-map2" v-if="!compareMapShow" />
+    <ul class="laymap">
+      <li
+        v-for="(item, index) in laymaplist"
+        :key="index"
+        @click="laymapclick(item)"
+      >
+        <img :src="item.img" alt="" />
+        <p>{{ item.name }}</p>
+      </li>
+    </ul>
+    <time-line></time-line>
+    <el-main>
+      <!--      <el-header>-->
+      <!-- <v-header class="v-header" /> -->
+      <!--      </el-header>-->
+      <div class="v-content">
+        <!-- <v-tool /> -->
+        <seachart ref="seachart" :compareMapShow="compareMapShow" />
+
+        <!-- <router-view></router-view> -->
+      </div>
+    </el-main>
+  </el-container>
+</template>
+
+<script>
+import layimg1 from "../assets/img/layimg1.png";
+import layimg2 from "../assets/img/layimg2.png";
+import map from "./map.vue";
+import map2 from "./map2.vue";
+import tool from "./tool.vue";
+import seachart from "./seachart.vue";
+import header from "./header.vue";
+import timeLine from "./timeLine.vue";
+export default {
+  components: {
+    "v-header": header,
+    "v-map": map,
+    "v-tool": tool,
+    seachart,
+    "v-map2": map2,
+    timeLine
+  },
+  data() {
+    return {
+      compareMapShow: false,
+      laymaplist: APPCONFIG.baseMapConfig,
+    };
+  },
+
+  created() {
+    this.compareMapShow = false;
+  },
+  methods: {
+    laymapclick(item) {
+      if (item.index == 1) {
+        this.compareMapShow = false;
+        setTimeout(() => {
+          let wmts = {
+            center: {
+              x: 113.61923217773438,
+              y: 34.739112854003906,
+              maxZoom: 18,
+              zoom: 7,
+            },
+            url: "http://t0.tianditu.gov.cn/vec_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
+            options: {
+              layer: "vec",
+              style: "default",
+              tilematrixSet: "c",
+              format: "tiles",
+            },
+            zjurl:
+              "http://t0.tianditu.gov.cn/cva_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
+            zjoptions: {
+              layer: "cva",
+              style: "default",
+              tilematrixSet: "c",
+              format: "tiles",
+            },
+            resolutions: [
+              1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625,
+              0.0439453125, 0.02197265625, 0.010986328125, 0.0054931640625,
+              0.00274658203125, 0.001373291015625, 0.0006866455078125,
+              0.00034332275390625, 0.000171661376953125, 0.0000858306884765625,
+              0.00004291534423828125, 0.000021457672119140625,
+              0.000010728836059570312, 0.000005364418029785156,
+              0.000002682209014892578, 0.000001341104507446289,
+            ],
+          };
+          wmtsyxlayer = new L.supermap.TiandituTileLayer({
+            key: "1d109683f4d84198e37a38c442d68311",
+          }).addTo(hcmap);
+          wmtszjlayer = new L.supermap.TiandituTileLayer({
+            isLabel: true,
+            key: "1d109683f4d84198e37a38c442d68311",
+          }).addTo(hcmap);
+        }, 50);
+      } else if (item.index == 2) {
+        setTimeout(() => {
+          this.compareMapShow = false;
+          let wmts = {
+            center: {
+              x: 113.61923217773438,
+              y: 34.739112854003906,
+              maxZoom: 18,
+              zoom: 7,
+            },
+            url: "http://t0.tianditu.gov.cn/img_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
+            options: {
+              layer: "img",
+              style: "default",
+              tilematrixSet: "c",
+              format: "tiles",
+            },
+            zjurl:
+              "http://t0.tianditu.gov.cn/cia_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
+            zjoptions: {
+              layer: "cia",
+              style: "default",
+              tilematrixSet: "c",
+              format: "tiles",
+            },
+            resolutions: [
+              1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625,
+              0.0439453125, 0.02197265625, 0.010986328125, 0.0054931640625,
+              0.00274658203125, 0.001373291015625, 0.0006866455078125,
+              0.00034332275390625, 0.000171661376953125, 0.0000858306884765625,
+              0.00004291534423828125, 0.000021457672119140625,
+              0.000010728836059570312, 0.000005364418029785156,
+              0.000002682209014892578, 0.000001341104507446289,
+            ],
+          };
+          wmtsyxlayer = new L.supermap.TiandituTileLayer({
+            layerType: "img",
+            key: "1d109683f4d84198e37a38c442d68311",
+          }).addTo(hcmap);
+          wmtszjlayer = new L.supermap.TiandituTileLayer({
+            layerType: "img",
+            isLabel: true,
+            key: "1d109683f4d84198e37a38c442d68311",
+          }).addTo(hcmap);
+        }, 50);
+
+        //wmtsyxlayer= L.supermap.wmtsLayer(wmts.url, wmts.options).addTo(hcmap);
+        // wmtszjlayer= L.supermap.wmtsLayer(wmts.zjurl, wmts.zjoptions).addTo(hcmap);
+      } else {
+        this.compareMapShow = true;
+      }
+      this.$bus.$emit("compareMap", this.compareMapShow);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+* {
+  font-family: "hndpfont" !important;
+}
+.el-container {
+  position: relative;
+  height: 100vh;
+
+  .laymap {
+    position: fixed;
+    bottom: 4%;
+    right: 4%;
+    z-index: 3;
+    display: flex;
+
+    li {
+      width: 70px;
+      position: relative;
+      margin: 0 6px;
+      cursor: pointer;
+      border: 1px solid #1d4470;
+      img {
+        width: 100%;
+      }
+
+      p {
+        width: 100%;
+        text-align: center;
+        position: absolute;
+        bottom: 0;
+        background: #1d4470;
+      }
+    }
+  }
+
+  .v-map {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .v-map2 {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: 1;
+  }
+
+  .el-main {
+    width: 100vw;
+    padding: 0;
+    position: absolute;
+    z-index: 2;
+
+    .el-header {
+      width: 100%;
+      height: 9vh !important;
+      color: #333;
+      text-align: center;
+      padding: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .v-content {
+      box-sizing: border-box;
+      position: fixed;
+    }
+  }
+}
+</style>
+
+<style>
+.leaflet-touch .leaflet-control-attribution {
+  display: none;
+}
+
+.el-radio-button:first-child {
+  border-left: none;
+}
+
+.el-radio-button__inner {
+  border: none !important;
+}
+</style>
