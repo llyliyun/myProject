@@ -13,6 +13,8 @@
     'change',
     'timelinechanged',
   ]
+  const publicPrefix = 'l-';
+  import echarts from "echarts";
   export default {
     name: 'LTimeline',
     mixins: [],
@@ -38,17 +40,22 @@
             interval: 0, //label 的间隔
             rotate: 0,
             formatter: function(time) {
-              let date = new Date(time)
-              let y = date.getFullYear();
-              let MM = date.getMonth() + 1;
-              MM = MM < 10 ? ('0' + MM) : MM;
-              let d = date.getDate();
-              d = d < 10 ? ('0' + d) : d;
-              return y + '-' + MM + '-' + d
+              // let date = new Date(time)
+              // let y = date.getFullYear();
+              // let MM = date.getMonth() + 1;
+              // MM = MM < 10 ? ('0' + MM) : MM;
+              // let d = date.getDate();
+              // d = d < 10 ? ('0' + d) : d;
+              // return y + '-' + MM + '-' + d
+              // let html = '';
+              // for(let i = 0;i<time.length;i=i+2){
+              //   html += time.substr(i,2) + "\n"
+              // }
+              return time
             },
             //lable文字的颜色
-            color: '#7c8196',
-            borderColor: '#7c8196',
+            color: '#f3f1f1',
+            borderColor: '#f3f1f1',
             emphasis: {
               color: '#1e90ff',
               borderColor: '#1e90ff'
@@ -57,7 +64,7 @@
           inverse: false, //是否反向放置,首尾颠倒
           orient: 'horizontal', //时间轴摆放位置:'vertical'：竖直放置;'horizontal'：水平放置。
           padding: [5, 5, 5, 5], //内边距
-          left: '2%', //距离容器左侧的距离
+          left: '-22px', //距离容器左侧的距离
           right: '2%', //距离容器右侧的距离
           controlPosition: 'left', //播放按钮显示位置
           realtime: true, //点击时间点的是否，是否更新视图
@@ -78,10 +85,10 @@
               y2: 1,
               colorStops: [{
                 offset: 0,
-                color: '#7c8196' // 0% 处的颜色
+                color: '#f3f1f1' // 0% 处的颜色
               }, {
                 offset: 1,
-                color: '#7c8196' // 100% 处的颜色
+                color: '#f3f1f1' // 100% 处的颜色
               }],
               globalCoord: false // 缺省为 false
             },
@@ -99,8 +106,8 @@
           itemStyle: { //timeline 时间点图形样式。
             // 线性渐变，前四个参数分别是 x0, y0, x2, y2, 范围从 0 - 1，相当于在图形包围盒中的百分比，如果 globalCoord 为 `true`，则该四个值是绝对的像素位置
             opacity: 1,
-            color: '#7c8196',
-            borderColor: '#7c8196',
+            color: '#f3f1f1',
+            borderColor: '#f3f1f1',
             emphasis: {
               color: '#1e90ff',
               borderColor: '#1e90ff'
@@ -115,8 +122,8 @@
           controlStyle: { //控制按钮样式
             showPrevBtn: true,
             itemSize: 16,
-            color: '#7c8196',
-            borderColor: '#7c8196',
+            color: '#f3f1f1',
+            borderColor: '#f3f1f1',
             emphasis: {
               color: '#1e90ff', //内颜色
               borderColor: '#1e90ff' //外颜色
@@ -125,7 +132,7 @@
         },
       }
       this.chart.setOption(this.option);
-      this.chart.resize()
+      this.chart.resize();
       this.addEventHook(this.chart, events);
     },
     computed: {
@@ -136,11 +143,11 @@
     watch: {
       timeline: {
         handler(val, oldVal) {
-        //   if(val.data.length>1){//解决时间轴上两个时间点时候第二个label不显示问题
-        //     //EventBus.$emit("init-time-line");
-        //   }
-        //   this.chart.setOption({timeline:this.timeline})
-        //   this.chart.resize({silent:true})
+          if(val.data.length>1){//解决时间轴上两个时间点时候第二个label不显示问题
+            //EventBus.$emit("init-time-line");
+          }
+          this.chart.setOption({timeline:this.timeline})
+          this.chart.resize()
         },
         deep:true
       },
@@ -149,6 +156,14 @@
       ...mapMutations([
 
         ]),
+      addEventHook(l, events) {
+        events.forEach((event, index) => {
+          let eventName = `${publicPrefix}${event}`;
+          l.on(event, (e) => {
+            this.$emit(eventName, e);
+          })
+        })
+      },
     }
   }
 </script>

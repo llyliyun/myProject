@@ -1,24 +1,26 @@
 <template>
   <div class="detcilBtn">
     <div>
-      <el-button type="primary">全流程跟踪</el-button>
-      <el-button type="primary">历史进度对比</el-button>
-      <el-button type="primary">专题分析</el-button>
+      <el-button type="primary" @click="changeBtn('lcgz')">全流程跟踪</el-button>
+      <el-button type="primary" @click="changeBtn('lsdb')">历史进度对比</el-button>
+      <el-button type="primary" @click="changeBtn('analysis')">专题分析</el-button>
     </div>
   </div>
 </template>
 
 <script>
 // 导入组件
-import ElImageViewer from "element-ui/packages/image/src/image-viewer";
 
 export default {
-  components: { ElImageViewer },
+  components: { },
   data() {
     return {
     };
   },
   methods: {
+    changeBtn(val){
+      this.$emit("changeProjectBtnFun",val);
+    }
   },
 };
 </script>

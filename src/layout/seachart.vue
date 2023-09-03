@@ -177,9 +177,11 @@
       <detail ref="detailref" @close="close" />
     </div>
     
-    <detailBtn ref="detailBtnref" v-if="detailShow"/>
-
-
+    <!-- <detailBtn ref="detailBtnref" v-if="detailShow"/> -->
+    <detailBtn ref="detailBtnref" @changeProjectBtnFun="changeProjectBtnFun"/>
+    <project-word v-if="projectBtnInfoShow.wordShow"></project-word>
+    <project-history-info v-if="projectBtnInfoShow.oldInfoShow"></project-history-info>
+    <project-analysis v-if="projectBtnInfoShow.analysisShow"></project-analysis>
     <div
       class="leftDiv"
       v-show="nameShow"
@@ -218,6 +220,9 @@ import legend from "./legend";
 import unitselection from "./unitselection";
 import detail from "./detail";
 import detailBtn from "./detailBtn";
+import projectWord from './projectWord';
+import projectHistoryInfo from "./projectHistoryInfo";
+import projectAnalysis from "./projectAnalysis";
 import files from "./files";
 import ofthings from "./ofthings";
 export default {
@@ -225,6 +230,9 @@ export default {
     tool,
     detail,
     detailBtn,
+    projectWord,
+    projectHistoryInfo,
+    projectAnalysis,
     "v-legend": legend,
     unitselection,
     ofthings,
@@ -233,6 +241,11 @@ export default {
   props: ["compareMapShow"],
   data() {
     return {
+      projectBtnInfoShow:{
+        wordShow:false,
+        oldInfoShow:false,
+        analysisShow:false
+      },
       current: 1,
       size: 20,
       total: 1,
@@ -468,6 +481,34 @@ export default {
     },
   },
   methods: {
+    /**进行项目事件的切换 */
+    changeProjectBtnFun(val){
+      if(val==='lcgz'){
+        this.projectBtnInfoShow = {
+          wordShow:true,
+          oldInfoShow:false,
+          analysisShow:false
+        }
+      } else if(val==='lsdb'){
+        this.projectBtnInfoShow = {
+          wordShow:false,
+          oldInfoShow:true,
+          analysisShow:false
+        }
+      } else if(val==='analysis'){
+        this.projectBtnInfoShow = {
+          wordShow:false,
+          oldInfoShow:false,
+          analysisShow:true
+        }
+      } else {
+        this.projectBtnInfoShow = {
+          wordShow:false,
+          oldInfoShow:false,
+          analysisShow:false
+        }
+      }
+    },
     buildNature(val) {
       this.msg.buildNoName = val;
     },
@@ -944,6 +985,22 @@ export default {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
+.project-line{
+    max-width: 600px;
+    min-width: 200px;
+    height: 110px;
+    z-index: 99;
+    background: #0c293b30;
+    float: right;
+    right: 100px;
+    position: absolute;
+    top: 300px;
+    border-radius: 5px;
+    border: #62b4d8 solid 1px;
+    .layer-title{
+      padding: 10px 0 0 10px;
+    }
+}
 .seachart {
   position: fixed;
   top: 1rem;

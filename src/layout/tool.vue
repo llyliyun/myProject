@@ -320,7 +320,7 @@ export default {
   height: 8.6vh;
   top: 0vh;
   left: 0vw;
-  background: url("../img/biaoti_bg.png") no-repeat;
+  // background: url("../img/biaoti_bg.png") no-repeat;
   background-size: 100% 100%;
 }
 

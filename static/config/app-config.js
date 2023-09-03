@@ -38,33 +38,66 @@ var APPCONFIG = APPCONFIG || {};
       {
         index: 1,
         name: "矢量",
-        img: layimg1,
+        img: "./static/img/layimg1.png",
       },
       {
         index: 2,
         name: "影像",
-        img: layimg2,
-        layers:[
+        img: "./static/img/layimg2.png",
+        openTime:true,
+        historyLayer:[
           {
             layerName:"影像1",
             layerUrl:"",
-            layerDate:'2012',
+            layerDate:'2012年2月',
           },{
             layerName:"影像2",
             layerUrl:"",
-            layerDate:'2013',
+            layerDate:'2013年5月',
           },{
             layerName:"影像3",
             layerUrl:"",
-            layerDate:'2014',
+            layerDate:'2014年7月',
           },
         ]
       },
       {
         index: 3,
         name: "三维",
-        img: layimg2,
+        img: "./static/img/layimg2.png",
       },
-    ]
+    ],
+    projectScheduleDate:[{
+      yearArr:[],
+      monthArr:[]
+    }],
+    SpecialToolConfig:[{
+      title:"控制线检测",
+      name:"kzxjc",
+      restLayer:[
+        {
+          url:"http://192.168.46.209:8090/iserver/services/map-SGS/rest/maps/ShengTaiBaoHuHongXian",
+          name:"生态保护红线"
+        },{
+          url:"http://192.168.46.209:8090/iserver/services/map-SGS/rest/maps/JBNTBHHX_1_1_copy",
+          name:"基本农田保护红线"
+        },{
+          url:"http://192.168.46.209:8090/iserver/services/map-SGS/rest/maps/ChengZhenKaiFaBianJie",
+          name:"城镇开发边界"
+        }
+      ]
+  },{
+      title:"基本农田分析",
+      name:"jbntfx",
+      restLayer:[]
+  },{
+      title:"ydxzfx",
+      name:"用地现状分析",
+      restLayer:[]
+  },{
+      title:"zdcqfx",
+      name:"征地拆迁分析",
+      restLayer:[]
+  }]
   }
 }())

@@ -2,17 +2,22 @@
   <el-container>
     <v-map class="v-map" v-if="compareMapShow" />
     <v-map2 class="v-map2" v-if="!compareMapShow" />
-    <ul class="laymap">
-      <li
-        v-for="(item, index) in laymaplist"
-        :key="index"
-        @click="laymapclick(item)"
-      >
-        <img :src="item.img" alt="" />
-        <p>{{ item.name }}</p>
-      </li>
-    </ul>
-    <time-line></time-line>
+    <div class="base-map-control" @mouseover="mapiconMouseOver()" @mouseout="mapiconMouseOut()">
+      <ul>
+        <div class="base-back"></div>
+        <li v-for="(item, index) in laymaplist" :key="index" style="position: absolute;right: 0;" :index="index" :value='item.pkid' @click="laymapclick(index,item)">
+          <div><img :src="item.img"></div>
+          <span :class='item.icon'>
+            <div class='map-icons-font' :title='item.name'>{{item.name}}</div>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div class="time-line" v-show="selectLayer.openTime">
+      <div class="layer-title">多期影像</div>
+      <time-line style="height: 50px;width: 100%" :timeline="timeline" @l-timelinechanged="timelineChanged"></time-line>
+    </div>
+    
     <el-main>
       <!--      <el-header>-->
       <!-- <v-header class="v-header" /> -->
@@ -28,14 +33,17 @@
 </template>
 
 <script>
-import layimg1 from "../assets/img/layimg1.png";
-import layimg2 from "../assets/img/layimg2.png";
+// import layimg1 from "../assets/img/layimg1.png";
+// import layimg2 from "../assets/img/layimg2.png";
 import map from "./map.vue";
 import map2 from "./map2.vue";
 import tool from "./tool.vue";
 import seachart from "./seachart.vue";
 import header from "./header.vue";
 import timeLine from "./timeLine.vue";
+import { 
+  mapMutations
+} from 'vuex'
 export default {
   components: {
     "v-header": header,
@@ -49,14 +57,41 @@ export default {
     return {
       compareMapShow: false,
       laymaplist: APPCONFIG.baseMapConfig,
+      selectLayer:{},
+      timeline:{},
     };
   },
 
   created() {
     this.compareMapShow = false;
   },
+  watch: {
+      selectLayer(newVal, oldVal) {
+        this.timeline = {};
+        const dataArr = [];
+        if(newVal.openTime && newVal.historyLayer.length > 1){
+          newVal.historyLayer.map(item=>{
+            dataArr.push(item.layerDate)
+          })
+        }
+        this.timeline.data = dataArr;
+        this.timeline.currentIndex = 0;
+      },
+  },
   methods: {
-    laymapclick(item) {
+    ...mapMutations([
+      'handleMiniMapIndex',
+    ]),
+    /**日期切换事件 */
+    timelineChanged(item){
+      this.laymapclick(item);
+    },
+    laymapclick(index,item) {
+      let newMap = this.laymaplist[index];
+      this.laymaplist.splice(index,1)
+      this.laymaplist.push(newMap);
+      
+      this.selectLayer = item;
       if (item.index == 1) {
         this.compareMapShow = false;
         setTimeout(() => {
@@ -103,55 +138,32 @@ export default {
       } else if (item.index == 2) {
         setTimeout(() => {
           this.compareMapShow = false;
-          let wmts = {
-            center: {
-              x: 113.61923217773438,
-              y: 34.739112854003906,
-              maxZoom: 18,
-              zoom: 7,
-            },
-            url: "http://t0.tianditu.gov.cn/img_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
-            options: {
-              layer: "img",
-              style: "default",
-              tilematrixSet: "c",
-              format: "tiles",
-            },
-            zjurl:
-              "http://t0.tianditu.gov.cn/cia_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
-            zjoptions: {
-              layer: "cia",
-              style: "default",
-              tilematrixSet: "c",
-              format: "tiles",
-            },
-            resolutions: [
-              1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625,
-              0.0439453125, 0.02197265625, 0.010986328125, 0.0054931640625,
-              0.00274658203125, 0.001373291015625, 0.0006866455078125,
-              0.00034332275390625, 0.000171661376953125, 0.0000858306884765625,
-              0.00004291534423828125, 0.000021457672119140625,
-              0.000010728836059570312, 0.000005364418029785156,
-              0.000002682209014892578, 0.000001341104507446289,
-            ],
-          };
+          const layerObj = item.historyLayer[0];
           wmtsyxlayer = new L.supermap.TiandituTileLayer({
-            layerType: "img",
-            key: "1d109683f4d84198e37a38c442d68311",
-          }).addTo(hcmap);
-          wmtszjlayer = new L.supermap.TiandituTileLayer({
-            layerType: "img",
-            isLabel: true,
             key: "1d109683f4d84198e37a38c442d68311",
           }).addTo(hcmap);
         }, 50);
-
-        //wmtsyxlayer= L.supermap.wmtsLayer(wmts.url, wmts.options).addTo(hcmap);
-        // wmtszjlayer= L.supermap.wmtsLayer(wmts.zjurl, wmts.zjoptions).addTo(hcmap);
       } else {
         this.compareMapShow = true;
       }
       this.$bus.$emit("compareMap", this.compareMapShow);
+    },
+    mapiconMouseOver() {
+      let iconlist = this.$el.children[1].children[0].getElementsByTagName("li");
+      for (let i = 0; i < iconlist.length; i++) {
+        let iconhtml = iconlist[i];
+        let rightPX = ((iconlist.length - iconhtml.getAttribute("index") - 1) * 66) + "px";
+        iconhtml.style.right = rightPX;
+      }
+      document.getElementsByClassName("base-back")[0].style.width = iconlist.length*66 + "px";
+    },
+    mapiconMouseOut() {
+      let iconlist = this.$el.children[1].children[0].children;
+      for (let i = 0; i < iconlist.length; i++) {
+        let iconhtml = iconlist[i];
+        iconhtml.style.right = 0;
+      }
+      document.getElementsByClassName("base-back")[0].style.width = 0 + "px";
     },
   },
 };
@@ -226,6 +238,74 @@ export default {
       position: fixed;
     }
   }
+  .base-map-control {
+      position: absolute;
+      top: 833px;
+      width: 60px;
+      height: 60px;
+      z-index: 999;
+      right: 50px;
+      transition: 0.5s;
+      .base-back{
+        height: 60px;
+        position:absolute;
+        background-color: rgba(255, 255, 255, 0);
+      }
+      li {
+        list-style-type: none;
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        font-size: 12px;
+        color: white;
+        border: 2px #b3d6f1 solid;
+        //border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: 1s;
+        .base-note-layer{
+          position: absolute;
+          top: 0;
+          width: 100%;
+          background: rgba(0,0,0,.5);
+          //visibility: hidden;
+          height: 24px;
+          line-height: 24px;
+          .el-checkbox__inner{
+            width: 12px;
+            height: 12px;
+            border-radius: 0;
+          }
+          .el-checkbox__label {
+            color: #fff;
+            padding-left: 4px;
+            font-size: 12px;
+          }
+          .el-checkbox__inner::after{
+            left: 3px;
+            top: 0px;
+          }
+        }
+        /*&:hover .base-note-layer{
+          visibility:visible;
+        }*/
+      }
+      .active {
+          border: 2px #67c23a solid !important;
+      }
+      .map-icons-font {
+        background: #178af5;
+        opacity: .8;
+        width: 56px;
+        padding: 2px;
+        position: absolute;
+        bottom: 4px;
+        height: 16px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+  }
 }
 </style>
 
@@ -240,5 +320,21 @@ export default {
 
 .el-radio-button__inner {
   border: none !important;
+}
+.time-line .layer-title{
+  padding: 10px 0 0 10px;
+}
+.time-line{
+    max-width: 500px;
+    min-width: 200px;
+    height: 77px;
+    z-index: 99;
+    background: #0c293b30;
+    float: right;
+    right: 51px;
+    position: absolute;
+    bottom: 112px;
+    border-radius: 5px;
+    border: #62b4d8 solid 1px;
 }
 </style>
