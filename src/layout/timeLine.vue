@@ -54,7 +54,7 @@
               return time
             },
             //lable文字的颜色
-            color: '#f3f1f1',
+            // color: '#f3f1f1',
             borderColor: '#f3f1f1',
             emphasis: {
               color: '#1e90ff',

@@ -1,0 +1,13 @@
+.leaflet-entity-querybtn-control i {
+  font-size: 17px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.leaflet-entity-query-mode {
+  cursor: default !important;
+}

@@ -86,6 +86,9 @@ export default {
           name: "定位",
         },
         {
+          name: "分屏",
+        },
+        {
           name: "清除",
         },
       ],
@@ -185,6 +188,8 @@ export default {
         drawPlug.startDrawPolygon(item.name);
       } else if (item.name == "定位") {
         this.dingwei = true;
+      } else if (item.name == "分屏") {
+        //this.dingwei = true;
       } else if (item.name == "清除") {
         drawPlug.clearLayer();
       } else {

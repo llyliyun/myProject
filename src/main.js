@@ -5,8 +5,8 @@ import App from './App'
 import router from './router'
 import Bus from './js/EventBus';
 import Router from 'vue-router';
-// import L from "leaflet";
-
+import L from "leaflet";
+import '@supermap/iclient-leaflet';
 import locale from 'element-ui/lib/locale/lang/zh-CN';
 import 'animate.css';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -14,7 +14,7 @@ import './icons/hn-font/hn-font/hn.css'
 import ElementUI, {
   Loading, Message
 } from 'element-ui';
-
+import store from './store'
 
 
 
@@ -32,6 +32,11 @@ Vue.use(ElementUI, {
   locale
 });
 Vue.use(Bus);
+
+//全局事件总线
+window.EventBus = new Vue();
+
+Vue.prototype.$L = L
 
 Vue.prototype.Loading = Loading;
 Vue.prototype.openLoading = function () {
@@ -55,6 +60,7 @@ Vue.prototype.$message = Message;
 new Vue({
   el: '#app',
   router,
+  store,
   components: {
     App,
   },

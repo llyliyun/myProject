@@ -1,11 +1,12 @@
 <template>
   <div class="project-history-info">
     <div class="project-line">
-      <div class="project-title">项目历史进度</div>
+      <div class="project-title">项目历史进度<i class="el-icon-close" title="关闭" @click="close"></i></div>
+      
       <time-line style="height: 80px;width: 100%" :timeline="timeline" @l-timelinechanged="historylineChanged"></time-line>
     </div>
     <div v-if="historyInfoShow" class="history-info">
-      <div class="title">{{findData.year}}年{{findData.month}}月项目进度</div>
+      <div class="title">{{findData.year}}年{{findData.month}}月项目进度<i class="el-icon-close" title="关闭" @click="()=>{historyInfoShow=false}"></i></div>
       <div class="cont">
         <div class="cont-title">360全景</div>
         <div class="cont-item">
@@ -21,12 +22,14 @@
       <div class="cont">
         <div class="cont-title">现场照片</div>
         <div v-if="scheduleVal.picture && scheduleVal.picture.length > 0" class="cont-item cont-img">
-          <el-image 
-            v-for="(img,index) in scheduleVal.picture"
-            :key="index"
-            :src="img.url" 
-            :preview-src-list="[img.url]">
-          </el-image>
+          <div class="cont-img">
+            <el-image 
+              v-for="(img,index) in scheduleVal.picture"
+              :key="index"
+              :src="img.url" 
+              :preview-src-list="[img.url]">
+            </el-image>
+          </div>
         </div>
         <div v-else class="cont-item">
           暂无
@@ -88,15 +91,24 @@ export default {
       yearsArr:[]
     };
   },
+  props: {
+    projectObjProp: { 
+      type: Object,
+      default: {
+        id:2293
+      }
+    },
+  },
   mounted(){
-    this.getYears()
+    if(this.projectObjProp)
+      this.getYears()
   },
   methods: {
     async historylineChanged(val){
       this.findData = this.yearsArr[val.currentIndex];
       if(this.findData){
         await this.getProjectScheduleByYears({
-          projectId: 2293,
+          projectId: this.projectObjProp.id,
           year: this.findData.year,
           month: this.findData.month
         })
@@ -127,25 +139,32 @@ export default {
         this.scheduleVal = schRes.data.data.proDeclare
       } else {
         this.$message.error('获取进度失败');
-        this.scheduleVal={
-          "projectId":0,
-          "fyear":0,
-          "fmonth":0,
-          "yearmonth":0,
-          "constDepOver":0,
-          "fiscalAppropr":0,
-          "buildDepPay":0,
-          "fixedInvestSystem":0,
-          "picture":[],
-          "description":"",
-          "issue":null,
-          "monthName":null,
-          "createTime":"",
-          "modifyTime":"",
-          "employee":0,
-          "weekOffset":0
-        }
+        this.clearVal();
       }
+    },
+    clearVal(){
+      this.scheduleVal={
+        "projectId":0,
+        "fyear":0,
+        "fmonth":0,
+        "yearmonth":0,
+        "constDepOver":0,
+        "fiscalAppropr":0,
+        "buildDepPay":0,
+        "fixedInvestSystem":0,
+        "picture":[],
+        "description":"",
+        "issue":null,
+        "monthName":null,
+        "createTime":"",
+        "modifyTime":"",
+        "employee":0,
+        "weekOffset":0
+      }    
+    },
+    close(){
+      this.clearVal();
+      this.$emit("changeProjectBtnFun")
     }
   },
 };
@@ -153,6 +172,14 @@ export default {
 
 <style lang="scss">
 .project-history-info{
+  .el-icon-close{
+    /* color: black; */
+    float: right;
+    /* z-index: 9999999999; */
+    /* position: relative; */
+    margin-right: 10px;
+    cursor: -webkit-grab;
+  }
   .project-line{
     width: 600px;
     min-width: 200px;
@@ -197,6 +224,11 @@ export default {
       .cont-img{
         max-height: 85px;
         overflow-x: auto;
+        position: relative;
+        overflow-y: hidden;
+      }
+      .demo-image__preview{
+        overflow: auto;
       }
       .el-image {
         width: 100px;

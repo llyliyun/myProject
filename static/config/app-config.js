@@ -1,11 +1,13 @@
 var APPCONFIG = APPCONFIG || {};
 (function () {
   APPCONFIG = {
+    analysisPagesize:100,
     wmts : {
       center: {
         x: 110.473274,
         y: 38.906454,
         maxZoom: 18,
+        minZoom:8,
         zoom:8,
       },
       url: "https://api.map.baidu.com/api?v=1.0&type=webgl&ak=2rqn9B1yfLro9Mo6atv8dD99OHO5FCZm",//"http://t0.tianditu.gov.cn/img_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
@@ -71,32 +73,38 @@ var APPCONFIG = APPCONFIG || {};
       yearArr:[],
       monthArr:[]
     }],
+    AnalysisRestUrl:"http://192.168.46.211:8090/iserver/services/spatialAnalysis-XMXZ/restjsr/spatialanalyst",
     SpecialToolConfig:[{
       title:"控制线检测",
       name:"kzxjc",
+      checkLayers:[],
       restLayer:[
         {
-          url:"http://192.168.46.209:8090/iserver/services/map-SGS/rest/maps/ShengTaiBaoHuHongXian",
+          url:"http://192.168.46.211:8090/iserver/services/map-XMXZ/rest/maps/xuanzhidikuai",
           name:"生态保护红线"
         },{
-          url:"http://192.168.46.209:8090/iserver/services/map-SGS/rest/maps/JBNTBHHX_1_1_copy",
+          url:"http://192.168.46.211:8090/iserver/services/map-XMXZ/rest/maps/xuanzhidikuai",
           name:"基本农田保护红线"
         },{
-          url:"http://192.168.46.209:8090/iserver/services/map-SGS/rest/maps/ChengZhenKaiFaBianJie",
-          name:"城镇开发边界"
+          url:"http://192.168.46.211:8090/iserver/services/map-XMXZ/rest/maps/xuanzhidikuai",
+          name:"城镇开发边界",
+          eraseLayer:true
         }
       ]
   },{
       title:"基本农田分析",
       name:"jbntfx",
+      checkLayers:[],
       restLayer:[]
   },{
       title:"ydxzfx",
       name:"用地现状分析",
+      checkLayers:[],
       restLayer:[]
   },{
       title:"zdcqfx",
       name:"征地拆迁分析",
+      checkLayers:[],
       restLayer:[]
   }]
   }

@@ -187,3 +187,22 @@ export async function getDeviceDetails(id) {
         state: 0
     };
 }
+
+//获取底图列表
+// export const apiBaseMap = (id) => {
+//     return new Promise((resolve, reject) => {
+//       jsonp(`${MapService}/map/manager/query.jsonp?pageindex=1&pageSize=1000&userid=${id}`, (err, data) => {
+//         if (err) {
+//           reject(err)
+//         } else {
+//           resolve(data);
+//         }
+//       })
+//     })
+//   }
+
+
+export const apiBaseMap = (id) => {
+    const data = require('../../static/json/query.json');
+    return data;
+  }

@@ -1,11 +1,11 @@
 <template>
   <div class="projectWord">
     <div class="project-line">
-      <div class="project-title">项目全流程跟踪</div>
+      <div class="project-title">项目全流程跟踪<i class="el-icon-close" title="关闭"  @click="close"></i></div>
       <time-line style="height: 80px;width: 700px;" :timeline="timeline" @l-timelinechanged="wordlineChanged"></time-line>
     </div>
     <div v-if="wordInfoShow" class="word-info">
-      <div class="title">{{titleText}}</div>
+      <div class="title">{{titleText}}<i class="el-icon-close" title="关闭" @click="()=>{wordInfoShow=false}"></i></div>
       <div class="cont" v-for="(obj,index) in infoObjArr" :key="index">
         <div class="cont-title">{{obj.createTime.substr(0,10)}}</div>
         <div class="cont-item">
@@ -13,14 +13,16 @@
             <div  v-if="!obj['tab_'+item.tplKey]" style="display: flex;">
               {{item.tplName}}:<div class="cont-value">--</div></div>
             <div v-else-if="!obj['tab_'+item.tplKey].indexOf || obj['tab_'+item.tplKey].indexOf('url') === -1"  style="display: flex;">{{item.tplName}}:<div class="cont-value">{{obj['tab_'+item.tplKey]}}</div></div>
-            <div v-else class="demo-image__preview">
+            <div v-else>
               {{item.tplName}}:
-              <div class="cont-img">
-                  <el-image 
-                  v-for="(img,index) in JSON.parse(obj['tab_'+item.tplKey])" :key="index"
-                    :src="imageIp + img.path" 
-                    :preview-src-list="[imageIp + img.path]">
-                  </el-image>
+              <div class="demo-image__preview">
+                <div class="cont-img">
+                    <el-image 
+                    v-for="(img,index) in JSON.parse(obj['tab_'+item.tplKey])" :key="index"
+                      :src="imageIp + img.path" 
+                      :preview-src-list="[imageIp + img.path]">
+                    </el-image>
+                </div>
               </div>
             </div>
           </div>
@@ -47,10 +49,25 @@ export default {
       imageIp:"https://pms-app-1256720271.cos.ap-beijing.myqcloud.com"
     };
   },
+  props: {
+    projectObjProp: { 
+      type: Object,
+      default: {
+        id:2293
+      }
+    },
+  },
   mounted(){
-    // if(){
+    if(this.projectObjProp){
       this.getFlowList();
-    // }
+    }
+  },
+  watch: {
+    projectObjProp() {
+      if(this.projectObjProp){
+        this.getFlowList();
+      }
+    }
   },
   methods: {
     async wordlineChanged(val){
@@ -66,7 +83,7 @@ export default {
           this.titleObjArr = titleRes.data.data;
         }
         const infoRes = await apiFlowInfoById({
-          projectId: 2293,
+          projectId: this.projectObjProp.id,
           flowCode: findData.flowCode,
           pageIndex: 1,
           pageSize: 0
@@ -81,7 +98,7 @@ export default {
       this.timeline.data = [];
       const dataList = [];
       const resList = await apiFlowList({
-        projectId: 2293,
+        projectId: this.projectObjProp.id,
         flowCode: ''
       });
       if(resList.data && resList.data.code == 200){
@@ -94,6 +111,10 @@ export default {
         this.$message.error('获取项目流程失败');
         this.projectInfo = [];
       }
+    },
+    /**关闭窗体 */
+    close(){
+      this.$emit("changeProjectBtnFun")
     }
   },
 };
@@ -101,6 +122,14 @@ export default {
 
 <style lang="scss">
 .projectWord{
+  .el-icon-close{
+    /* color: black; */
+    float: right;
+    /* z-index: 9999999999; */
+    /* position: relative; */
+    margin-right: 10px;
+    cursor: -webkit-grab;
+  }
   .project-line{
     min-width: 200px;
     height: 110px;
@@ -158,16 +187,22 @@ export default {
         background: #a0a0a085;
         border-radius: 5px;
         max-height: 85px;
-        overflow-x: auto;
         overflow-y: hidden;
         display: table;
-        width: 200px;
         display: inline-flex;
+        overflow-x: auto;
+        position: relative;
+      }
+      .demo-image__preview{
+        overflow: auto;
       }
       .el-image {
         width: 100px;
         height: 80px;
         padding: 2px;
+        .el-image__preview{
+          width: 100px;
+        }
       }
     }
   }

@@ -179,9 +179,9 @@
     
     <!-- <detailBtn ref="detailBtnref" v-if="detailShow"/> -->
     <detailBtn ref="detailBtnref" @changeProjectBtnFun="changeProjectBtnFun"/>
-    <project-word v-if="projectBtnInfoShow.wordShow"></project-word>
-    <project-history-info v-if="projectBtnInfoShow.oldInfoShow"></project-history-info>
-    <project-analysis v-if="projectBtnInfoShow.analysisShow"></project-analysis>
+    <project-word v-if="projectBtnInfoShow.wordShow" @changeProjectBtnFun="changeProjectBtnFun"></project-word>
+    <project-history-info v-if="projectBtnInfoShow.oldInfoShow" @changeProjectBtnFun="changeProjectBtnFun"></project-history-info>
+    <project-analysis v-if="projectBtnInfoShow.analysisShow" @changeProjectBtnFun="changeProjectBtnFun"></project-analysis>
     <div
       class="leftDiv"
       v-show="nameShow"
@@ -462,12 +462,14 @@ export default {
       this.showAll = false;
       this.lenghtList = true;
     });
+    this.$bus.$on("changeProjectBtnFun",this.changeProjectBtnFun)
   },
   destroyed() {
     this.$bus.$off("billboardData");
     this.$bus.$off("clearbuildNoName");
     this.$bus.$off("3dmaker");
     this.$bus.$off("Ofthings");
+    this.$bus.$off("changeProjectBtnFun",this.changeProjectBtnFun)
   },
   watch: {
     compareMapShow: {

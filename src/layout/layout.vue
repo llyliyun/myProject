@@ -2,22 +2,26 @@
   <el-container>
     <v-map class="v-map" v-if="compareMapShow" />
     <v-map2 class="v-map2" v-if="!compareMapShow" />
+    <tab-list class="result-table"></tab-list>
     <div class="base-map-control" @mouseover="mapiconMouseOver()" @mouseout="mapiconMouseOut()">
       <ul>
         <div class="base-back"></div>
-        <li v-for="(item, index) in laymaplist" :key="index" style="position: absolute;right: 0;" :index="index" :value='item.pkid' @click="laymapclick(index,item)">
-          <div><img :src="item.img"></div>
+        <li v-for="(item, index) in baseMapLayersGroup" :key="index" style="position: absolute;right: 0;" :index="index" :value='item.pkid' @click="changeBaseMap(index,item)">
+          <div><img :src="item.imgUrl"></div>
           <span :class='item.icon'>
             <div class='map-icons-font' :title='item.name'>{{item.name}}</div>
           </span>
         </li>
       </ul>
     </div>
-    <div class="time-line" v-show="selectLayer.openTime">
-      <div class="layer-title">多期影像</div>
+    <div class="time-line" v-show="selectLayer.openTime&&showLine">
+      <!-- <div class="layer-title">多期影像</div> -->
       <time-line style="height: 50px;width: 100%" :timeline="timeline" @l-timelinechanged="timelineChanged"></time-line>
     </div>
-    
+    <div v-show="selectLayer.openTime" class="colseImg">
+      <img src="../../static/img/next.png" alt="" class="timeImg"  v-show="showLine" @click="showTimeLine(false)">
+      <img src="../../static/img/left.png" alt="" class="timeImg" v-show="!showLine" @click="showTimeLine(true)">
+    </div>
     <el-main>
       <!--      <el-header>-->
       <!-- <v-header class="v-header" /> -->
@@ -33,16 +37,16 @@
 </template>
 
 <script>
-// import layimg1 from "../assets/img/layimg1.png";
-// import layimg2 from "../assets/img/layimg2.png";
 import map from "./map.vue";
 import map2 from "./map2.vue";
 import tool from "./tool.vue";
 import seachart from "./seachart.vue";
 import header from "./header.vue";
 import timeLine from "./timeLine.vue";
+import TabList from "./commont/TabList.vue";
+
 import { 
-  mapMutations
+  mapMutations, mapState
 } from 'vuex'
 export default {
   components: {
@@ -51,27 +55,36 @@ export default {
     "v-tool": tool,
     seachart,
     "v-map2": map2,
-    timeLine
+    timeLine,
+    TabList
   },
   data() {
     return {
       compareMapShow: false,
-      laymaplist: APPCONFIG.baseMapConfig,
+      laymaplist: null,
       selectLayer:{},
       timeline:{},
+	  showLine:true,
+      mIndex:0,
+      resultList:[]
     };
   },
 
   created() {
     this.compareMapShow = false;
   },
+  computed:{
+    ...mapState({
+      baseMapLayersGroup:state => state.map.baseMapLayersGroup,
+    })
+  },
   watch: {
       selectLayer(newVal, oldVal) {
         this.timeline = {};
         const dataArr = [];
-        if(newVal.openTime && newVal.historyLayer.length > 1){
-          newVal.historyLayer.map(item=>{
-            dataArr.push(item.layerDate)
+        if(newVal.openTime){
+          newVal.verLayers.map(item=>{
+            dataArr.push(item.version)
           })
         }
         this.timeline.data = dataArr;
@@ -80,17 +93,42 @@ export default {
   },
   methods: {
     ...mapMutations([
+	   'changeMapMode',
+      'changeCurrentBaseMapIndex',
       'handleMiniMapIndex',
     ]),
     /**日期切换事件 */
     timelineChanged(item){
-      this.laymapclick(item);
+      EventBus.$emit('baseMapChange',this.baseMapLayersGroup.length-1,item.currentIndex);
     },
-    laymapclick(index,item) {
-      let newMap = this.laymaplist[index];
-      this.laymaplist.splice(index,1)
-      this.laymaplist.push(newMap);
+
+    //底图列表切换
+    changeBaseMap(index, item) {
+      this.selectLayer = item;
+      this.selectLayer.mapIndex = index;
+      if(item.verLayers.length > 1){
+        this.selectLayer.openTime = true
+      }else{
+        this.selectLayer.openTime = false
+      }
+      // console.log(this.baseMapLayersGroup)
+      // let newMap = this.laymaplist[index];
+      // this.laymaplist.splice(index,1)
+      // this.laymaplist.push(newMap);
       
+      let type = item.type;
+      EventBus.$emit('baseMapChange',index,this.mIndex);
+      // this.changeSplitScreen(false);
+      if (type == 'scene') {
+        this.changeMapMode('3d');
+        this.changeCurrentBaseMapIndex(this.baseMapLayersGroup.length - index - 1);
+      } else {
+        this.changeMapMode('2d');
+        this.changeCurrentBaseMapIndex(this.baseMapLayersGroup.length - index - 1);
+      }
+    },
+
+    laymapclick(index,item) {
       this.selectLayer = item;
       if (item.index == 1) {
         this.compareMapShow = false;
@@ -149,7 +187,7 @@ export default {
       this.$bus.$emit("compareMap", this.compareMapShow);
     },
     mapiconMouseOver() {
-      let iconlist = this.$el.children[1].children[0].getElementsByTagName("li");
+      let iconlist = this.$el.children[2].children[0].getElementsByTagName("li");
       for (let i = 0; i < iconlist.length; i++) {
         let iconhtml = iconlist[i];
         let rightPX = ((iconlist.length - iconhtml.getAttribute("index") - 1) * 66) + "px";
@@ -158,13 +196,16 @@ export default {
       document.getElementsByClassName("base-back")[0].style.width = iconlist.length*66 + "px";
     },
     mapiconMouseOut() {
-      let iconlist = this.$el.children[1].children[0].children;
+      let iconlist = this.$el.children[2].children[0].children;
       for (let i = 0; i < iconlist.length; i++) {
         let iconhtml = iconlist[i];
         iconhtml.style.right = 0;
       }
       document.getElementsByClassName("base-back")[0].style.width = 0 + "px";
     },
+    showTimeLine(val){
+      this.showLine = val;
+    }
   },
 };
 </script>
@@ -306,6 +347,18 @@ export default {
         overflow: hidden;
       }
   }
+  .colseImg {
+    z-index: 99;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 774px;
+    right: 35px;
+  }
+  .timeImg{
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>
 
@@ -327,7 +380,7 @@ export default {
 .time-line{
     max-width: 500px;
     min-width: 200px;
-    height: 77px;
+    /* height: 77px; */
     z-index: 99;
     background: #0c293b30;
     float: right;
