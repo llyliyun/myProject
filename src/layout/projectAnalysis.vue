@@ -1,12 +1,14 @@
 <template>
   <div class="projectAnalysis">
     <div class="Analysis-info">
-      <div class="title">专题分析</div>
+      <div class="title">专题分析
+        <i class="el-icon-close" @click="showAnalysis"></i>
+      </div>
       <div class="cont">
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="(item,index) in analysisConfig" :label="item.title" :name="item.name" :key="index">
                 <div>
-                    <div>分析图层</div>
+                    <div class="analyze">分析图层</div>
                     <el-checkbox-group v-model="item.checkLayers">
                       <el-checkbox
                         v-for="(layer, yzindex) in item.restLayer"
@@ -31,6 +33,7 @@
 <script>
 // 导入组件
 import ConflictMixin from "./mixin/ConflictMixin";
+import EventBus from "../js/event";
 const operateRegions = [{
     "type": "FeatureCollection",
     "features": [{
@@ -96,6 +99,9 @@ export default {
             this.$bus.$emit("query-geo", result)
           }
         }
+      },
+      showAnalysis(){
+        EventBus.$emit("show-analysis", false);
       }
   },
 };
@@ -122,14 +128,60 @@ export default {
     top: 240px;
     .title{
       font-size: 16px;
+      text-align: center;
+      line-height: 40px;
+      padding-bottom: 3px;
+      margin-top: -7px;
+      margin-left: -8px;
+      margin-right: -8px;
+      background: rgba(251,253,255,.1);
+      .el-icon-close{
+        position: relative;
+        right: -106px;
+        top: -4px;
+        cursor: pointer;
+      }
     }
     .cont{
       padding:15px 15px 0 15px;
         .el-tabs__nav-next, .el-tabs__nav-prev {
-            color: #f9f9f9;
+            color: #0dccf1;
         }
         .el-tabs__item {
-            color:#f9f9f9;
+            color:#0dccf1;
+        }
+        .el-tabs .el-tabs__nav-wrap:after {
+          height: 1px;
+          background-color: #084e5f;
+        }
+        .el-tabs .el-tabs__item.is-active {
+          color: #fff;
+        }
+        // .el-tabs__nav.is-top {
+        //   transform: translateX(16px) !important;
+        // }
+        .analyze{
+          color: #0dccf1;
+          line-height: 46px;
+        }
+        .el-checkbox__label {
+          color: #fff;
+          line-height: 30px;
+        }
+        .el-checkbox-group {
+          margin-bottom: 26px;
+        }
+        .el-button{
+          background-color: #0babd1;
+          border-color: #0babd1;
+          color: #fff;
+          margin-left: 100px;
+          margin-bottom: 10px;
+        }
+        .el-button:hover{
+          background-color: #0babd1;
+          border-color: #0babd1;
+          color: #fff;
         }
     }
   }

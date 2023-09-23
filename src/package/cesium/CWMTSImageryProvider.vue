@@ -53,7 +53,7 @@
     },
     methods: {
       _initHooks() {
-        imageryLayers = Viewer.imageryLayers;
+        imageryLayers = window.viewer.imageryLayers;
         this.cesium = imageryLayers.addImageryProvider(this.provider);
         if(this.provider._layer == APPCONFIG.DOMLayer){
           this.cesium.alpha = 0;

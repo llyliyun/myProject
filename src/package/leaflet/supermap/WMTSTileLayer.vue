@@ -54,24 +54,6 @@
     },
     mounted() {
       let layerOptions = this.mixinPropOption(this._props, props);
-      /**
-       * 河南省平台兼容影像统筹wmts服务
-       */
-      var res = [];
-      var matrixIdsValue=[], matrixIdsValue96=[];
-      var resolution = this._props.options.resolutions[0].toString().slice(0,this._props.options.resolutions[0].toString().indexOf('.')+4);
-      for (var i = 0; i < 21; i++) {
-          res.push(0.703125 / (Math.pow(2, i)));
-          matrixIdsValue[i] = {identifier : i +""};
-          matrixIdsValue96[i] = {identifier : i + 1 +""};
-      }
-      layerOptions.resolutions = res;
-      if(this._props.options.resolutions[0] >= 1.4 && this._props.options.resolutions[0] <= 1.5){
-        layerOptions.matrixIds = matrixIdsValue96;
-      }else if(resolution == "0.703" || resolution == "7.031"){
-        layerOptions.matrixIds = matrixIdsValue;
-      }
-      /* 兼容影像统筹wmts服务 end */
       this.leaflet = L.supermap.wmtsLayer(this.url, layerOptions);
       //this.leaflet = this._adaptLayer(this.url, layerOptions);
       this.addEventHook(this.leaflet, events);

@@ -73,7 +73,7 @@
           tileWidth: this.tileWidth,
           layers: this.layers
         });
-        imageryLayers = Viewer.imageryLayers;
+        imageryLayers = window.viewer.imageryLayers;
         cesium = imageryLayers.addImageryProvider(layer);
       }
     }

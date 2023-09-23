@@ -106,6 +106,79 @@ var APPCONFIG = APPCONFIG || {};
       name:"征地拆迁分析",
       checkLayers:[],
       restLayer:[]
-  }]
+  }],
+  FlyToViewer: {
+    //启动场景飞行动画节点控制配置
+    animation: true, //是否启用动画效果
+    startView: {
+      //飞行起始位置
+      destination: {
+        longitude: -130.06913391631326,
+        latitude: -13.000652394869265,
+        height: 62362314.63237358,
+      },
+      orientation: {
+        heading: 356.3479157193852,
+        pitch: -88.76538637532117,
+        roll: 0,
+      },
+    },
+    flyOPtions: [
+      {
+        //飞行第二节点位置信息
+        time: 1,
+        options: {
+          //相机在WGS84世界坐标系中的最终位置,或是自顶向下视图中可见的矩形区域   Viewer.camera.position 参数值转为经纬度后的值
+          destination: {
+            longitude: 107.58264740073696,
+            latitude: 24.302073691641343,
+            height: 7544367.818510125,
+          },
+          //飞行时间 单位 s
+          duration: 3.5,
+          //包含了方位(direction)、上方向(up)以及方位角(heading)、俯仰角(pitch)、滚动角(roll)属性的对象  roll这个参数同一设为0就行
+          //对应的 Viewer.camera.heading  Viewer.camera.pitch  Viewer.camera.roll 为弧度值 转为对应的角度值
+          orientation: {
+            heading: 356.57979148896317,
+            pitch: -79.09025706569628,
+            roll: 360,
+          },
+        },
+      },
+      {
+        time: 1,
+        options: {
+          destination: {
+            longitude: 110.21835524290394,
+            latitude: 20.840893081722232,
+            height: 3056416.3976397617,
+          },
+          duration: 1.5,
+          orientation: {
+            heading: 357.8949888241818,
+            pitch: -72.51046575502038,
+            roll: 6.106664988409952e-13,
+          },
+        },
+      },
+      //项目上针对自己的区域单独配置下面这个点
+      {
+        time: 1,
+        options: {
+          destination: {
+            longitude: 117.14862182437557,
+            latitude: 36.514012225775446,
+            height: 286038.0207228119,
+          },
+          duration: 6,
+          orientation: {
+            heading: 359.5876966624758,
+            pitch: -66.48597001718866,
+            roll: 0,
+          },
+        },
+      },
+    ],
+  },
   }
 }())

@@ -76,6 +76,7 @@ export default {
   computed:{
     ...mapState({
       baseMapLayersGroup:state => state.map.baseMapLayersGroup,
+      cSpecialLayers:state => state.scene.cSpecialLayers,
     })
   },
   watch: {
@@ -96,96 +97,44 @@ export default {
 	   'changeMapMode',
       'changeCurrentBaseMapIndex',
       'handleMiniMapIndex',
+      'cRemoveAllLayer',
+      'changeMapIndexAndHistoryIndex'
     ]),
     /**日期切换事件 */
     timelineChanged(item){
       EventBus.$emit('baseMapChange',this.baseMapLayersGroup.length-1,item.currentIndex);
+      this.changeMapIndexAndHistoryIndex([this.baseMapLayersGroup.length-1,item.currentIndex]);
     },
 
     //底图列表切换
     changeBaseMap(index, item) {
       this.selectLayer = item;
       this.selectLayer.mapIndex = index;
-      if(item.verLayers.length > 1){
+      if(item.verLayers && item.verLayers.length > 1){
         this.selectLayer.openTime = true
       }else{
         this.selectLayer.openTime = false
       }
-      // console.log(this.baseMapLayersGroup)
-      // let newMap = this.laymaplist[index];
-      // this.laymaplist.splice(index,1)
-      // this.laymaplist.push(newMap);
       
       let type = item.type;
-      EventBus.$emit('baseMapChange',index,this.mIndex);
       // this.changeSplitScreen(false);
       if (type == 'scene') {
-        this.changeMapMode('3d');
-        this.changeCurrentBaseMapIndex(this.baseMapLayersGroup.length - index - 1);
-      } else {
-        this.changeMapMode('2d');
-        this.changeCurrentBaseMapIndex(this.baseMapLayersGroup.length - index - 1);
-      }
-    },
-
-    laymapclick(index,item) {
-      this.selectLayer = item;
-      if (item.index == 1) {
-        this.compareMapShow = false;
-        setTimeout(() => {
-          let wmts = {
-            center: {
-              x: 113.61923217773438,
-              y: 34.739112854003906,
-              maxZoom: 18,
-              zoom: 7,
-            },
-            url: "http://t0.tianditu.gov.cn/vec_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
-            options: {
-              layer: "vec",
-              style: "default",
-              tilematrixSet: "c",
-              format: "tiles",
-            },
-            zjurl:
-              "http://t0.tianditu.gov.cn/cva_c/wmts?tk=685315d34dfbdae548cd4a33dffa55c4",
-            zjoptions: {
-              layer: "cva",
-              style: "default",
-              tilematrixSet: "c",
-              format: "tiles",
-            },
-            resolutions: [
-              1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625,
-              0.0439453125, 0.02197265625, 0.010986328125, 0.0054931640625,
-              0.00274658203125, 0.001373291015625, 0.0006866455078125,
-              0.00034332275390625, 0.000171661376953125, 0.0000858306884765625,
-              0.00004291534423828125, 0.000021457672119140625,
-              0.000010728836059570312, 0.000005364418029785156,
-              0.000002682209014892578, 0.000001341104507446289,
-            ],
-          };
-          wmtsyxlayer = new L.supermap.TiandituTileLayer({
-            key: "1d109683f4d84198e37a38c442d68311",
-          }).addTo(hcmap);
-          wmtszjlayer = new L.supermap.TiandituTileLayer({
-            isLabel: true,
-            key: "1d109683f4d84198e37a38c442d68311",
-          }).addTo(hcmap);
-        }, 50);
-      } else if (item.index == 2) {
-        setTimeout(() => {
-          this.compareMapShow = false;
-          const layerObj = item.historyLayer[0];
-          wmtsyxlayer = new L.supermap.TiandituTileLayer({
-            key: "1d109683f4d84198e37a38c442d68311",
-          }).addTo(hcmap);
-        }, 50);
-      } else {
+        // EventBus.$emit('beforeBaseMapChange')
         this.compareMapShow = true;
+        this.changeMapMode('3d');
+        this.changeCurrentBaseMapIndex(index);
+      } else {
+        this.compareMapShow = false;
+        EventBus.$emit('baseMapChange',index,this.mIndex);
+        this.changeMapIndexAndHistoryIndex([index,this.mIndex]);
+        this.changeMapMode('2d');
+        this.changeCurrentBaseMapIndex(index);
+        this.cRemoveAllLayer();
       }
       this.$bus.$emit("compareMap", this.compareMapShow);
+
     },
+
     mapiconMouseOver() {
       let iconlist = this.$el.children[2].children[0].getElementsByTagName("li");
       for (let i = 0; i < iconlist.length; i++) {

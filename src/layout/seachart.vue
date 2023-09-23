@@ -177,8 +177,7 @@
       <detail ref="detailref" @close="close" />
     </div>
     
-    <!-- <detailBtn ref="detailBtnref" v-if="detailShow"/> -->
-    <detailBtn ref="detailBtnref" @changeProjectBtnFun="changeProjectBtnFun"/>
+    <detailBtn ref="detailBtnref" @changeProjectBtnFun="changeProjectBtnFun" :selectType="selectType"/>
     <project-word v-if="projectBtnInfoShow.wordShow" @changeProjectBtnFun="changeProjectBtnFun"></project-word>
     <project-history-info v-if="projectBtnInfoShow.oldInfoShow" @changeProjectBtnFun="changeProjectBtnFun"></project-history-info>
     <project-analysis v-if="projectBtnInfoShow.analysisShow" @changeProjectBtnFun="changeProjectBtnFun"></project-analysis>
@@ -215,6 +214,7 @@
 </template>
 
 <script>
+import EventBus from "../js/event";
 import tool from "./tool";
 import legend from "./legend";
 import unitselection from "./unitselection";
@@ -375,6 +375,7 @@ export default {
         polygonPoint: "", //坐标范围
         fyear: "2022", //时间
       },
+      selectType:''
     };
   },
   computed: {},
@@ -383,6 +384,9 @@ export default {
     this.time = mydate.getFullYear();
   },
   mounted() {
+    EventBus.$on("show-analysis", (val)=>{
+      this.projectBtnInfoShow.analysisShow = val;
+    });
     this.$bus.$on("clearbuildNoName", () => {
       this.msg.buildNoName = "";
     });
@@ -485,6 +489,7 @@ export default {
   methods: {
     /**进行项目事件的切换 */
     changeProjectBtnFun(val){
+      this.selectType = val;
       if(val==='lcgz'){
         this.projectBtnInfoShow = {
           wordShow:true,

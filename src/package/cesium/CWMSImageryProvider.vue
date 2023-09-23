@@ -77,7 +77,7 @@
     },
     methods: {
       _initHooks() {
-        imageryLayers = Viewer.imageryLayers;
+        imageryLayers = window.viewer.imageryLayers;
         this.cesium = this.zIndex ? imageryLayers.addImageryProvider(this.provider, this.zIndex) : imageryLayers.addImageryProvider(this.provider);
       },
       mixinOptions(_props, propsObj) {

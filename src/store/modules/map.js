@@ -41,6 +41,9 @@ const state = {
   mapTags:[],//在线制图地图标签
   mapName:"无标题",//在线制图地图的名字
   serverList:[],//属性与文档服务数据
+  mapIndex:0,  //底图列表将要切换到的索引
+  historyIndex:0,  //历史影像索引
+  isFirst:true, //
 }
 const actions = {
   // getPrjCoordSys({ commit }) {
@@ -200,10 +203,10 @@ const mutations = {
   },
   changeCurrentBaseMapIndex(state, index) {
     state.currentBaseMapIndex = index;
-    var templayer = state.baseMapLayersGroup[0];
-    Vue.set(state.baseMapLayersGroup, 0, state.baseMapLayersGroup[index]);
+    let lastIndex = state.baseMapLayersGroup.length - 1;
+    var templayer = state.baseMapLayersGroup[lastIndex];
+    Vue.set(state.baseMapLayersGroup, lastIndex, state.baseMapLayersGroup[index]);
     Vue.set(state.baseMapLayersGroup, index, templayer);
-
   },
   changeLayerZIndex(state, {
     downLayer,
@@ -335,6 +338,13 @@ const mutations = {
   changeServerList(state, serverList){
     Vue.set(state,'serverList',serverList);
   },
+  changeMapIndexAndHistoryIndex(state,arr){
+    state.mapIndex = arr[0];
+    state.historyIndex = arr[1];
+  },
+  changeFirst(){
+    state.isFirst = false;
+  }
 }
 
 export default {

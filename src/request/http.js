@@ -4,7 +4,10 @@ let baseURL = 'http://1.13.3.116:9000/'
 // let baseURL = 'http://222.143.35.109:2014'
 let config = {
   baseURL: baseURL,
-  timeout: 30000 //设置最大请求时间
+  timeout: 30000, //设置最大请求时间
+  headers:{
+    'Content-Type': 'application/json;charset=utf-8'
+  }
 }
 const _axios = axios.create(config)
 

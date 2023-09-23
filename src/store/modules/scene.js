@@ -51,6 +51,9 @@ const mutations = {
         }
       }
     },
+    cRemoveAllLayer(){
+      state.cSpecialLayers = [];
+    },
     cShowHideLayer(state, {
       layer,
       flag

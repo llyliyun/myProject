@@ -66,7 +66,7 @@
           url : this.url
         });
       } else {
-        let promise = SuperMap2DImagryProvider(Viewer, this.url, {prjCoordSys: 4326});
+        let promise = SuperMap2DImagryProvider(window.viewer, this.url, {prjCoordSys: 4326});
         let _this = this
         promise.then(function(data) {
           _this._cesium = data
@@ -104,7 +104,7 @@
     },
     methods: {
       _initHooks() {
-        imageryLayers = Viewer.imageryLayers
+        imageryLayers = window.viewer.imageryLayers
         if(this._provider) this._cesium = imageryLayers.addImageryProvider(this._provider);
       }
     }

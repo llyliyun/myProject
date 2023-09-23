@@ -132,6 +132,9 @@ export default {
     ...mapState({
       baseMapLayersGroup: (state) => state.map.baseMapLayersGroup,
       mapMode:state => state.map.mapMode,
+      isFirst:state => state.map.isFirst,
+      mapIndex:state => state.map.mapIndex,
+      historyIndex:state => state.map.historyIndex,
     })
   },
   beforeDestroy(){
@@ -141,6 +144,7 @@ export default {
     ...mapMutations([
       'changeMapMode',
       'addBaseMapLayersGroup',
+      'changeFirst'
     ]),
     async initBaseMap() {
       let self = this;
@@ -181,9 +185,12 @@ export default {
         let currentMap = JSON.parse(localStorage.getItem('currentMap'));
         maps.unshift(currentMap)
       }
-      console.log(maps)
-      this.addBaseMapLayersGroup(maps);
-      this.initMapConfig(this.currentMap, "default");
+      if(this.isFirst){
+        this.addBaseMapLayersGroup(maps.reverse());
+        this.initMapConfig(this.currentMap, "default");
+      }else{
+        this.baseMapChange(this.baseMapLayersGroup.length-1,this.historyIndex)
+      }
     },
     baseMapChange(mapIndex,index){
       this.currentMap = this.baseMapLayersGroup[mapIndex]
@@ -226,7 +233,7 @@ export default {
       return item
     },
     initMapConfig(currentMap, index) {
-      console.log(currentMap)
+      this.changeFirst();
       localStorage.setItem('currentMap',JSON.stringify(currentMap))
       this.baseMapLayers = [];
       this.wmtsMatrixIds = null;
@@ -303,7 +310,6 @@ export default {
       this.mapOptions = mapOptions;
       //判断坐标系是否一致，只有坐标系不一致的情况才切换坐标系重设中心点， 判断经依据crs的Bounds跟origin、resolutions， 不判断scales(dpi不同导致)
       let needChangeMapCrs = true;
-      // console.log(this.$refs.map.leaflet)
       if (this.$refs && this.$refs.map && this.$refs.map.leaflet) {
         let map = this.$refs.map.leaflet;
         let oldCrsOptions = map.options.crs.options || map.options.crs; //自定义坐标系、平面坐标系无crs.options
@@ -314,7 +320,6 @@ export default {
           && oldCrsOptions.resolutions[0] == crsOptions.resolutions[0]) {
           needChangeMapCrs = false;
         }*/
-        // console.log(oldCrsOptions)
         if (oldCrsOptions && L.point(oldCrsOptions.origin) && L.point(oldCrsOptions.origin).equals(crsOptions.origin)) {
           needChangeMapCrs = false;
         }
@@ -418,7 +423,6 @@ export default {
         zoom: center.zoom,
         crs: L.CRS.EPSG4326,
       });
-      // console.log(wmtsMap)
       
       // L.supermap.TiledMapLayer(url).addTo(map);
 

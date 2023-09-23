@@ -18,8 +18,6 @@ import store from './store'
 
 
 
-
-
 import moment from "moment"
 Vue.prototype.$moment = moment;
 const echarts = require('echarts')
@@ -32,7 +30,6 @@ Vue.use(ElementUI, {
   locale
 });
 Vue.use(Bus);
-
 //全局事件总线
 window.EventBus = new Vue();
 
