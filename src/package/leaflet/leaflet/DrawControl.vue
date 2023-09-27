@@ -1,8 +1,8 @@
 <template> </template>
 <script>
-import L from "leaflet";
-import "leaflet-draw/dist/leaflet.draw.css";
-import "leaflet-draw/dist/leaflet.draw.js";
+// import L from "leaflet";
+// import "leaflet-draw/dist/leaflet.draw.css";
+// import "leaflet-draw/dist/leaflet.draw.js";
 import mixin from "./../mixins/mixin";
 
 let layer = null;

@@ -31,25 +31,25 @@ export default {
   },
   mounted() {
     this.init();
-    this.$bus.$on("clearenminutes", () => {
+    EventBus.$on("clearenminutes", () => {
       this.minutesShow = false;
       this.projectName = "";
     });
-    this.$bus.$on("Organizat", (val) => {
+    EventBus.$on("Organizat", (val) => {
       this.fyear = val;
       this.init();
     });
   },
   destroyed() {
-    this.$bus.$off("clearenminutes");
-    this.$bus.$off("Organizat");
+    EventBus.$off("clearenminutes");
+    EventBus.$off("Organizat");
   },
   watch: {
     projectName: {
       handler: function (newVal, oldVal) {
         if (newVal == "") {
           this.length = -1;
-          this.$bus.$emit("clearbuildNoName");
+          EventBus.$emit("clearbuildNoName");
         }
       },
       deep: true, //为true，表示深度监听，这时候就能监测到a值变化
@@ -72,8 +72,8 @@ export default {
     },
     fileclick() {
       this.minutesShow = !this.minutesShow;
-      this.$bus.$emit("clearenfile");
-      this.$bus.$emit("clearent");
+      EventBus.$emit("clearenfile");
+      EventBus.$emit("clearent");
     },
     querySearch(queryString, cb) {
       var restaurants = this.restaurants;

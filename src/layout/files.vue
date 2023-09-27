@@ -86,7 +86,7 @@ export default {
     };
   },
   mounted() {
-    this.$bus.$on("clearent", () => {
+    EventBus.$on("clearent", () => {
       this.fileShow = false;
     });
   },
@@ -152,8 +152,8 @@ export default {
     },
     fileclick() {
       this.fileShow = !this.fileShow;
-      this.$bus.$emit("clearentool");
-      this.$bus.$emit("clearenminutes");
+      EventBus.$emit("clearentool");
+      EventBus.$emit("clearenminutes");
     },
     handleCheckChange(data, checked, indeterminate) {
       console.log(data, checked, indeterminate);

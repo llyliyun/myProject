@@ -157,14 +157,14 @@ export default {
   },
   mounted() {
     this.onload3D();
-    this.$bus.$on("markerplain", (data) => {
+    EventBus.$on("markerplain", (data) => {
       this.getSitePosition(data);
     });
-    this.$bus.$on("marker3dplain", (data) => {
+    EventBus.$on("marker3dplain", (data) => {
       this.getSite3Dplay(data);
     });
 
-    this.$bus.$on("flyTolist", (data) => {
+    EventBus.$on("flyTolist", (data) => {
       this.flyToleft(data);
     });
   },
@@ -178,8 +178,8 @@ export default {
     // }
   },
   destroyed() {
-    this.$bus.$off("markerplain");
-    this.$bus.$off("flyTolist");
+    EventBus.$off("markerplain");
+    EventBus.$off("flyTolist");
   },
   methods: {
     ...mapMutations([
@@ -578,10 +578,10 @@ export default {
         var pick = viewer.scene.pick(movement.position);
         // 获取点击位置笛卡尔坐标
         if (pick.id.id == "video" || pick.id.id == "surrou") {
-          _this.$bus.$emit("Ofthings", pick.id.id);
+          _EventBus.$emit("Ofthings", pick.id.id);
         } else {
           if (Cesium.defined(pick) && pick.id.id) {
-            _this.$bus.$emit("billboardData", pick.id.id);
+            _EventBus.$emit("billboardData", pick.id.id);
             var position = viewer.scene.pickPosition(movement.position);
             if (!position) {
               position = Cesium.Cartesian3.fromDegrees(0, 0, 0);
@@ -596,14 +596,14 @@ export default {
               height: height + 600,
               id: pick.id.id,
             });
-            _this.$bus.$emit("3dmaker", { lat: longitude, lng: latitude });
+            _EventBus.$emit("3dmaker", { lat: longitude, lng: latitude });
           }
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     },
     //换标志点
     brighter(data) {
-      this.$bus.$emit("gisBuilber", data.id);
+      EventBus.$emit("gisBuilber", data.id);
       if (this.markData && this.oldId) {
         viewer.entities.getById(this.oldId).billboard = {
           image: this.markData,

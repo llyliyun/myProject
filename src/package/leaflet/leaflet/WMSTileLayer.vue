@@ -1,7 +1,7 @@
 <template> </template>
 
 <script>
-import L from "leaflet";
+// import L from "leaflet";
 import mixin from "./../mixins/mixin";
 
 const events = [

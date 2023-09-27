@@ -1,5 +1,5 @@
 <template>
-  <l-map ref="map" class="leaflet-map" :options="mapOptions" v-if="mapOptions" @l-click="onMapClick" >
+  <l-map ref="map" class="leaflet-map" :options="mapOptions" v-if="mapOptions" @l-click="onMapClick"  @l-ready="onMapReady">
     <l-layer-group ref="baseMapLayersGroup">
       <template v-for="(item, index) in baseMapLayers">
         <l-wmts-tilelayer
@@ -47,15 +47,54 @@
         </l-rest-tilelayer>
       </template>
     </l-layer-group>
+    <l-layer-group ref="specialLayersGroup">
+        <template v-for="(item, index) in specialLayers">
+          <l-wms-tilelayer v-if="item.layerType == 'WMS111'" :key="item.resID || item.key" :url="item.url" :version="'1.1.1'" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible">
+          </l-wms-tilelayer>
+          <l-wms-tilelayer v-else-if="item.layerType == 'WMS130'" :key="item.resID + 1100 || item.key + 1100" :url="item.url" :version="'1.3.0'" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible">
+          </l-wms-tilelayer>
+          <l-wmts-tilelayer v-else-if="item.layerType == 'WMTS' || item.layerType == 'WMTS100'" :key="item.resID + 1200 || item.key + 1200" :url="item.urlTemplate || item.url" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible">
+          </l-wmts-tilelayer>
+          <l-wmts-tilelayer v-else-if="item.layerType == 'SGSWMTS100'" :key="item.resID + 1300 || item.key + 1300" :url="item.urlTemplate || item.url" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible">
+          </l-wmts-tilelayer>
+          <l-wmts-tilelayer v-else-if="item.layerType == 'WMTS-china'" :key="item.resID + 1400 || item.key + 1400" :url="item.urlTemplate || item.url" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible">
+          </l-wmts-tilelayer>
+          <l-sfs-layer v-else-if="item.layerType == 'SGSSFS110'" :key="item.resID + 1500 || item.key + 1500" :url="item.url" :keepInView="true" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible" :filter="item.filter" :rp="item.rp" :icon="item.icon">
+          </l-sfs-layer>
+          <l-rest-tilelayer v-else-if="item.layerType == 'SMRESTMAP' || item.layerType == 'SMRESTMAPCACHE'" :key="item.id || item.resID" :url="item.urlTemplate || item.url" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible" :layersID="item.layerName">
+          </l-rest-tilelayer>
+          <l-Time-Service-Layer v-else-if="item.layerType == 'TSService'" :key="item.id + 1600 || item.resID + 1600" :url="item.url" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible" :layersID="item.layerName || item.name">
+          </l-Time-Service-Layer>
+          <l-esri-dynamic-tilelayer v-else-if="item.layerType == 'ArcGISREST'" :key="item.resID + 1700 || item.key + 1700" :url="item.url" :layers="item.layerName" :options="item.options" :zIndex="index * 20 || 15" :opacity="item.opacity" :visible="item.visible">
+          </l-esri-dynamic-tilelayer>
+          <heart-layer v-else-if="item.layerType == 'heartMap'" :key="item.id + 2100" :themeSettings="item.themeSettings" :id="item.id" :zIndex="index * 20 || 15" :visible="item.visible">
+          </heart-layer>
+          <honey-layer v-else-if="item.layerType == 'honeycombMap'" :key="item.id + 2200" :honeycomb="item.themeSettings" :id="item.id" :zIndex="index * 20 || 15" :visible="item.visible">
+          </honey-layer>
+          <marker-clusterGroup-layer v-else-if="item.layerType == 'markerClusterGroup'" :key="item.id" :id="item.id" :zIndex="index * 20 || 15" :visible="item.visible">
+          </marker-clusterGroup-layer>
+          <unique-layer v-else-if="item.layerType == 'uniqueMap'" :key="item.id + 2300" :themeSetting="item.themeSettings" :id="item.id" :zIndex="index * 20 || 15" :visible="item.visible" :name='item.name' :dataSetType="item.dataSetType">
+          </unique-layer>
+          <sectional-layer v-else-if="item.layerType == 'sectionalMap'" :key="item.id + 2400" :themeSetting="item.themeSettings" :zIndex="index * 20 || 15" :visible="item.visible" :id="item.id" :name='item.name' :dataSetType="item.dataSetType">
+          </sectional-layer>
+          <basic-layer v-else-if="item.layerType == 'basicMap'" :key="item.id + 2500" :themeSetting="item.themeSettings" :zIndex="index * 20 || 15" :visible="item.visible" :id="item.id" :dataSetType="item.dataSetType">
+          </basic-layer>
+          <rank-symbol-layer v-else-if="item.layerType == 'rankSymbolMap'" :key="item.id + 2600" :themeSetting="item.themeSettings" :zIndex="index * 20 || 15" :visible="item.visible" :id="item.id" :dataSetType="item.dataSetType">
+          </rank-symbol-layer>
+          <graph-layer v-else-if="item.layerType == 'graphMap'" :key="item.id + 2700" :themeSetting="item.themeSettings" :zIndex="index * 20 || 15" :visible="item.visible" :id="item.id" :dataSetType="item.dataSetType">
+          </graph-layer>
+          <l-real-time-layer v-else-if="item.layerType === 'REALTIME'" :key="item.resID + 2600" :url="item.url" :opacity="item.opacity" :zIndex="index * 20 || 15"></l-real-time-layer>
+        </template>
+      </l-layer-group>
     </l-map>
 </template>
 
 <script>
-import DrawPlug from "../js/hi";
+import DrawPlug from "./../js/hi";
 import Vue from 'vue'
 // import L from 'leaflet'
-import 'leaflet-contextmenu';
-import 'leaflet-contextmenu/dist/leaflet.contextmenu.min.css';
+// import 'leaflet-contextmenu';
+// import 'leaflet-contextmenu/dist/leaflet.contextmenu.min.css';
 import {
   LMap,
   LWmsTilelayer,
@@ -106,27 +145,25 @@ export default {
       currentMap:null,
     }
   },
-  mounted() {
+  async mounted() {
     EventBus.$on('baseMapChange', this.baseMapChange);
-    // 获取json文件数据
-    const result = require("../../static/json/query.json");
-    this.resultInfo = result.resultInfo.data.items;
-    this.currentMap = this.resultInfo[0];
-    this.initBaseMap();
-    let wmts = APPCONFIG.wmts;
-    var resolutions = wmts.resolutions;
-    let center = wmts.center;
-    this.mapOptions = {
-      center: [center.y, center.x],
-        zoom: center.zoom,
-        minZoom: center.minZoom,
-        maxBounds: L.latLngBounds(
-          L.latLng(this.currentMap.bbox[1], this.currentMap.bbox[0]),
-          L.latLng(this.currentMap.bbox[3], this.currentMap.bbox[2])
-        ),
-        preferCanvas: true,
-    }
-
+    // if (this.currentBaseMap) {
+    //   this.initMapConfig(this.currentBaseMap, 'default');
+    // }
+    // let wmts = APPCONFIG.wmts;
+    // var resolutions = wmts.resolutions;
+    // let center = wmts.center;
+    // this.mapOptions = {
+    //   center: [center.y, center.x],
+    //     zoom: center.zoom,
+    //     minZoom: center.minZoom,
+    //     maxBounds: L.latLngBounds(
+    //       L.latLng(this.currentMap.bbox[1], this.currentMap.bbox[0]),
+    //       L.latLng(this.currentMap.bbox[3], this.currentMap.bbox[2])
+    //     ),
+    //     preferCanvas: true,
+    // }
+    await this.initBaseMap();
   },
   computed:{
     ...mapState({
@@ -135,7 +172,11 @@ export default {
       isFirst:state => state.map.isFirst,
       mapIndex:state => state.map.mapIndex,
       historyIndex:state => state.map.historyIndex,
-    })
+      specialLayers: state => state.map.specialLayers,
+    }),
+    currentBaseMap() {
+      return this.baseMapLayersGroup[0];
+    },
   },
   beforeDestroy(){
     EventBus.$off('baseMapChange', this.baseMapChange);
@@ -181,6 +222,7 @@ export default {
         this.$message.error('暂未配置底图，请联系管理员配置')
         return;
       }
+      this.currentMap = items[0];
       if(this.$route.query.fromMultiScreen){
         let currentMap = JSON.parse(localStorage.getItem('currentMap'));
         maps.unshift(currentMap)
@@ -408,9 +450,17 @@ export default {
       if (e.layer) {
         return;
       }
-      if (drawLayerGroup && this.$refs.map.leaflet.hasLayer(drawLayerGroup)) {
-        drawLayerGroup.invoke('disableEdit');
-      }
+      // if (drawLayerGroup && this.$refs.map.leaflet.hasLayer(drawLayerGroup)) {
+      //   drawLayerGroup.invoke('disableEdit');
+      // }
+    },
+    onMapReady(map) {
+      window.hcmap = map;
+      var _viewSpotLayer = L.layerGroup();
+      map.addLayer(_viewSpotLayer);
+      window._viewSpotLayer = _viewSpotLayer;
+      let drawPlug = new DrawPlug(map, _viewSpotLayer);
+      window.drawPlug = drawPlug;
     },
     initMap() {
       let wmtsMap = this.resultInfo[1].layers[1];

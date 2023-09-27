@@ -1,0 +1,70 @@
+<!--********************************************************************
+* Copyright© 2000 - 2023 SuperMap Software Co.Ltd. All rights reserved.
+*********************************************************************-->
+<nav id="nav" class="navbar navbar-static-top default">
+  <div class="nav-header">
+      <div class="navcontentfixed">
+        <div class="navbar-header">
+            <div class="navbar-title">
+                <a class="navbar-brand" target="_self" href="../../web/index.html">
+                    <img class="project-logo" src="../img/svg/logo-dark.svg" style="visibility: visible;"
+                        id="logo">
+                </a>
+            </div>
+        </div>
+        <div class="navbar-rightbar">
+          <ul>
+              <!-- 版本号 -->
+              <li>
+                  <span class="project-title vm" id="title">
+                      <span>{{nav.title}}</span>
+                      <span class="pre-release" id="version">{{nav.version}}</span>
+                  </span>
+              </li>
+              <!-- 中英文 -->
+              <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#"> 
+                      <span  data-i18n="nav.language._name">中文</span>
+                    <img src="../img/arrowDown-dark.png" alt="" style="display: inline-block;width: 10px;height: 10px;">
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li><a class="lang-option text-center" data-lang="zh-CN">中文</a></li>
+                      <li><a class="lang-option text-center" data-lang="en-US">English</a></li>
+                  </ul>
+              </li>
+              <!-- 小尺寸toggle按钮 -->
+              <li class="navbar-toggle">
+                  <a href="#" class=" collapsed" data-toggle="collapse"
+                      data-target="#navbar-collapse" aria-expanded="false">
+                  </a>
+              </li>
+        </ul>
+        </div>
+        <div class="collapse navbar-collapse navbar-custom-menu"  id="navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li class="navbar-menu" id="leaflet-menu">
+                <a class="center" target="_self" href="../leaflet/examples.html">for Leaflet</a>
+              </li>
+              <li class="navbar-menu" id="openlayers-menu">
+                  <a class="center" target="_self" href="../openlayers/examples.html">for OpenLayers</a>
+              </li>
+              <li class="navbar-menu" id="mapboxgl-menu">
+                  <a class="center" target="_self" href="../mapboxgl/examples.html">for MapboxGL</a>
+              </li>
+              <li class="navbar-menu" id="maplibregl-menu">
+                <a class="center" target="_self" href="../maplibregl/examples.html">for MapLibreGL</a>
+              </li>
+              <li class="navbar-menu" id="classic-menu">
+                  <a class="center" target="_self" href="../classic/examples.html">Classic</a>
+              </li>
+              <li class="navbar-menu" id="3dwebgl-menu">
+                  <a class="center" target="_self" href="http://support.supermap.com.cn:8090/webgl/index.html">3D WebGL</a>
+              </li>
+              <li class="navbar-menu" id="component-menu">
+                  <a class="center" target="_self" href="../component/examples.html" data-i18n="nav.component._name">组件</a>
+              </li>
+            </ul>
+        </div>
+      </div>
+  </div>
+</nav>

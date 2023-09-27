@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <i @click="close" class="el-icon-circle-close detail-close" />
-    <el-radio-group
+  <div class="detailCom">
+    <div class="title">基本信息</div>
+    <!-- <i @click="close" class="el-icon-circle-close detail-close" /> -->
+    <!-- <el-radio-group
       v-model="messageText"
       class="ai-tab-change"
       fill="rgba(0,198,255,.3)"
@@ -26,7 +27,7 @@
       >
         批复材料
       </el-radio-button>
-    </el-radio-group>
+    </el-radio-group> -->
     <div
       class="xiangxi"
       v-if="messageText === 'project-overview'"
@@ -600,6 +601,17 @@ export default {
 </script>
 
 <style lang="scss">
+.detailCom{
+  background: rgba(0,13,22,0.3);
+  border: 1px solid #4B585E;
+  margin-top: 20px;
+  .title{
+    background: url(/static/img/project/dabiao.png) no-repeat;
+    background-size: 100% 100%;
+    padding-left: 10px;
+    font-size: 22px;
+  }
+}
 .detail-radio-btn {
   margin-left: 12px;
   border: 1px solid #00d2ff !important;
@@ -620,13 +632,13 @@ export default {
   background: #fff;
 }
 .xiangxi {
-  margin-top: 10px;
+  margin-top: 20px;
   max-height: 40vh;
   overflow-y: auto;
-  background: url(/static/img/kuang2.a0357f5.png) no-repeat;
-  background-size: 100% 100%;
-  background-color: rgba(0, 0, 0, 0.1);
-  background-color: #5e5e4d73;
+  // background: url(/static/img/kuang2.a0357f5.png) no-repeat;
+  // background-size: 100% 100%;
+  // background-color: rgba(0, 0, 0, 0.1);
+  // background-color: #5e5e4d73;
   padding: 16px 10px;
 }
 .flelt_box {
@@ -684,6 +696,9 @@ export default {
 .xiangxi .el-descriptions__body {
   background-color: transparent;
   color: #f5f5f5;
+}
+.xiangxi .el-descriptions-item__label {
+    color: #CCF3FF;
 }
 .el-image-viewer__canvas img {
   max-width: 200px;

@@ -2,7 +2,7 @@
   <div class="projectWord">
     <div class="project-line">
       <div class="project-title">项目全流程跟踪<i class="el-icon-close" title="关闭"  @click="close"></i></div>
-      <time-line style="height: 80px;width: 700px;" :timeline="timeline" @l-timelinechanged="wordlineChanged"></time-line>
+      <time-line style="height: 80px;width: 756px;position: relative;top:-12px;" :timeline="timeline" @l-timelinechanged="wordlineChanged"></time-line>
     </div>
     <div v-if="wordInfoShow" class="word-info">
       <div class="title">{{titleText}}<i class="el-icon-close" title="关闭" @click="()=>{wordInfoShow=false}"></i></div>
@@ -35,7 +35,7 @@
 <script>
 // 导入组件
 import {apiFlowList,apiFlowTitleInfo,apiFlowInfoById} from '@/js/project-api.js'
-import timeLine from './timeLine'
+import timeLine from './projectTimeLine.vue'
 export default {
   components: { timeLine},
   data() {
@@ -52,8 +52,8 @@ export default {
   props: {
     projectObjProp: { 
       type: Object,
-      default: {
-        id:2293
+      default: ()=>{
+        return {id:2293}
       }
     },
   },
@@ -83,7 +83,7 @@ export default {
           this.titleObjArr = titleRes.data.data;
         }
         const infoRes = await apiFlowInfoById({
-          projectId: this.projectObjProp.id,
+          projectId: this.projectObjProp.proDeclareTotal.projectId,
           flowCode: findData.flowCode,
           pageIndex: 1,
           pageSize: 0
@@ -98,7 +98,7 @@ export default {
       this.timeline.data = [];
       const dataList = [];
       const resList = await apiFlowList({
-        projectId: this.projectObjProp.id,
+        projectId: this.projectObjProp.proDeclareTotal.projectId,
         flowCode: ''
       });
       if(resList.data && resList.data.code == 200){
@@ -132,7 +132,7 @@ export default {
   }
   .project-line{
     min-width: 200px;
-    height: 110px;
+    // height: 110px;
     z-index: 99;
     position: fixed;
     float: right;

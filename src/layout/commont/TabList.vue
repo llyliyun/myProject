@@ -53,13 +53,13 @@ export default {
     },
   },
   mounted(){
-    this.$bus.$on("query-geo",this.renderData)
-    this.$bus.$on('toolbar-clearAll', this.removeResult);
+    EventBus.$on("query-geo",this.renderData)
+    EventBus.$on('toolbar-clearAll', this.removeResult);
     this.changeGeoJsonDataFlag(false);
-    // this.$bus.$emit('result-list',this.resultList)
+    // EventBus.$emit('result-list',this.resultList)
   },
   beforedestroy(){
-    this.$bus.$off("query-geo",this.renderData)
+    EventBus.$off("query-geo",this.renderData)
   },
   computed: {
     ...mapState({
@@ -100,7 +100,7 @@ export default {
             })
             // console.log(this.resultList,9999);
           }
-          this.$bus.$emit('result-list',list)
+          EventBus.$emit('result-list',list)
 
         }
         if (list && list.length) {
@@ -173,7 +173,7 @@ export default {
                   dashArray: '',
                   fillOpacity: 0.9
                 })
-                this.$bus.$emit("result-active",feature.properties);
+                EventBus.$emit("result-active",feature.properties);
               }
             }
           })

@@ -33,7 +33,6 @@
 <script>
 // 导入组件
 import ConflictMixin from "./mixin/ConflictMixin";
-import EventBus from "../js/event";
 const operateRegions = [{
     "type": "FeatureCollection",
     "features": [{
@@ -61,10 +60,10 @@ export default {
     // for(let i=0;i<this.analysisConfig.length;i++){
     //   this.analysisConfig[i].checkLayers = [];
     // }
-    this.$bus.$on("query-finish-geo", this.queryFinish);
+    EventBus.$on("query-finish-geo", this.queryFinish);
   },
   beforeDestroy(){
-    this.$bus.$off("query-finish-geo", this.queryFinish)
+    EventBus.$off("query-finish-geo", this.queryFinish)
   },
   methods: {
       handleClick(){
@@ -96,7 +95,7 @@ export default {
 
               })
             }
-            this.$bus.$emit("query-geo", result)
+            EventBus.$emit("query-geo", result)
           }
         }
       },
@@ -110,36 +109,38 @@ export default {
 <style lang="scss">
 .projectAnalysis{
   .Analysis-info{
-    width: 300px;
+    width: 400px;
     /* height: 110px; */
     /* z-index: 99; */
-    background: #0c293bba;
-    border-radius: 5px;
-    border: #62b4d8 solid 1px;
     padding: 10px;
     font-family: auto;
     font-size: 14px;
     color: #f9f9f9;
     margin: 50x;
-    top: 10px;
     position: fixed;
     float: right;
     right: 40px;
-    top: 240px;
+    top: 120px;
+    background: rgba(0,13,22,0.6);
+    border: 1px solid #42555E;
+    border-radius: 6px;
     .title{
-      font-size: 16px;
-      text-align: center;
-      line-height: 40px;
-      padding-bottom: 3px;
-      margin-top: -7px;
-      margin-left: -8px;
-      margin-right: -8px;
-      background: rgba(251,253,255,.1);
+      padding-left: 30px;
+      font-size: 18px;
+      font-family: ShiShangZhongHeiJianTi;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.8);
+      height: 29px;
+      line-height: 29px;
+      background-repeat: no-repeat;
+      background-image: url("./../../static/img/project/xiaobiao1.png");
       .el-icon-close{
-        position: relative;
-        right: -106px;
-        top: -4px;
-        cursor: pointer;
+        /* color: black; */
+        float: right;
+        /* z-index: 9999999999; */
+        /* position: relative; */
+        margin-right: 10px;
+        cursor: -webkit-grab;
       }
     }
     .cont{

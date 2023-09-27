@@ -6,9 +6,9 @@
 
 <script>
 import $ from "jquery";
-import "leaflet/dist/leaflet.css";
+// import "leaflet/dist/leaflet.css";
 // import L from "leaflet";
-import "leaflet-editable/src/Leaflet.Editable";
+// import "leaflet-editable/src/Leaflet.Editable";
 import mixin from "./../mixins/mixin";
 import "../../../../static/lib/patch/leaflet-patch";
 

@@ -131,7 +131,7 @@ export default {
         this.changeCurrentBaseMapIndex(index);
         this.cRemoveAllLayer();
       }
-      this.$bus.$emit("compareMap", this.compareMapShow);
+      EventBus.$emit("compareMap", this.compareMapShow);
 
     },
 

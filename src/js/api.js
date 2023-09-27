@@ -203,6 +203,6 @@ export async function getDeviceDetails(id) {
 
 
 export const apiBaseMap = (id) => {
-    const data = require('../../static/json/query.json');
+    const data = require('../../static/data/query.json');
     return data;
   }

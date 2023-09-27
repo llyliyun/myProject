@@ -108,7 +108,7 @@ export default {
       this.findData = this.yearsArr[val.currentIndex];
       if(this.findData){
         await this.getProjectScheduleByYears({
-          projectId: this.projectObjProp.id,
+          projectId: this.projectObjProp.proDeclareTotal.projectId,
           year: this.findData.year,
           month: this.findData.month
         })
@@ -185,24 +185,30 @@ export default {
     min-width: 200px;
     height: 110px;
     z-index: 99;
-    background: #0c293bba;
-    border-radius: 5px;
-    border: #62b4d8 solid 1px;
     position: fixed;
     float: right;
     right: 40px;
     top: 120px;
+
+    background: rgba(0,13,22,0.6);
+    border: 1px solid #42555E;
+    border-radius: 6px;
     .project-title{
-      padding: 10px 0 0 10px;
+      background-image: url("./../../static/img/project/xiaobiao1.png");
+      padding-left: 30px;
+      font-size: 18px;
+      font-family: ShiShangZhongHeiJianTi;
+      font-weight: 400;
+      line-height: 29px;
+      color: rgba(255, 255, 255, 0.8);
+      background-repeat: no-repeat;
+      margin: 5px;
     }
   }
   .history-info{
     width: 400px;
     /* height: 110px; */
     /* z-index: 99; */
-    background: #0c293bba;
-    border-radius: 5px;
-    border: #62b4d8 solid 1px;
     padding: 10px;
     font-family: auto;
     font-size: 14px;
@@ -213,8 +219,19 @@ export default {
     float: right;
     right: 40px;
     top: 240px;
+    background: rgba(0,13,22,0.6);
+    border: 1px solid #42555E;
+    border-radius: 6px;
     .title{
-      font-size: 16px;
+      padding-left: 30px;
+      font-size: 18px;
+      font-family: ShiShangZhongHeiJianTi;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.8);
+      height: 29px;
+      line-height: 29px;
+      background-repeat: no-repeat;
+      background-image: url("./../../static/img/project/xiaobiao1.png");
     }
     .cont{
       padding:8px 8px 0 8px;;

@@ -114,10 +114,10 @@ export default {
     /**
      * 工具
      */
-    this.$bus.$on("clearentool", () => {
+    EventBus.$on("clearentool", () => {
       this.showAll = false;
     });
-    this.$bus.$on("compareMap", (data) => {
+    EventBus.$on("compareMap", (data) => {
       this.toolshow = data;
     });
 
@@ -132,9 +132,9 @@ export default {
     });
   },
   destroyed() {
-    this.$bus.$off("clearentool");
-    this.$bus.$off("compareMap");
-    this.$bus.$off("handleAs");
+    EventBus.$off("clearentool");
+    EventBus.$off("compareMap");
+    EventBus.$off("handleAs");
   },
   created() {
     this.init();
@@ -146,8 +146,8 @@ export default {
     },
     closeSearch() {
       this.showAll = !this.showAll;
-      this.$bus.$emit("clearent");
-      this.$bus.$emit("clearenminutes");
+      EventBus.$emit("clearent");
+      EventBus.$emit("clearenminutes");
     },
 
     handleChange(e, form, thsAreaCode) {
@@ -480,13 +480,25 @@ export default {
 }
 .leaflet-touch .leaflet-control-zoom-in,
 .leaflet-touch .leaflet-control-zoom-out {
-  color: #7a9bc1;
+  /* color: #7a9bc1;
   background: #1d4470;
-  border: 1px solid #1d4470;
+  border: 1px solid #1d4470; */
+  color: #00D2FF;
+  background: rgba(0,198,255,0.4);
+  border: 1px solid #00D2FF;
 }
 .leaflet-bar a:hover {
-  color: #7a9bc1;
+  /* color: #7a9bc1;
   background: #1d4470;
-  border: 1px solid #1d4470;
+  border: 1px solid #1d4470; */
+  color: #00D2FF;
+  background: rgba(0,198,255,0.4);
+  border: 1px solid #00D2FF;
+}
+.leaflet-top .leaflet-control {
+  margin-top: 1.0rem;
+}
+.leaflet-left .leaflet-control {
+  margin-left: 15px;
 }
 </style>

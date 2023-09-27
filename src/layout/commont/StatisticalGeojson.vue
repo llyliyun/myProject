@@ -42,10 +42,10 @@
         </el-table-column>
         <el-table-column v-if="showDetail" type="index" :index="indexMethod">
         </el-table-column>
-        <el-table-column v-for="(key, index) in statisticalData.keys" :label="key === '面积' ? '面积(' + unitValue + ')' : key" :key="Math.floor(Math.random() * 10000)">
+        <el-table-column v-for="item in statisticalData.keys" :label="item === '面积' ? '面积(' + unitValue + ')' : item" :key="Math.floor(Math.random() * 10000)">
           <template slot-scope="scope">
-            <div class="cell-item" :title="scope.row[key]">
-              {{ scope.row[key] }}
+            <div class="cell-item" :title="scope.row[item]">
+              {{ scope.row[item] }}
             </div>
           </template>
         </el-table-column>
@@ -124,7 +124,7 @@ export default {
         this.$emit(`l-${item}`, args, this.showDetail);
       });
     });
-    this.$bus.$on("result-active", this.highlight);
+    EventBus.$on("result-active", this.highlight);
     this.tableDataFun();
   },
   props: {
@@ -311,7 +311,7 @@ export default {
         this.statisticalData.keys = this.tableData.keys
         // this.statisticalData = this.tableData;
         this.statisticalData.name = this.name;
-        this.$bus.$emit('table-data', this.statisticalData)
+        EventBus.$emit('table-data', this.statisticalData)
         this.headDate = this.statisticalData.keys;
         /*this.$nextTick( ()=> {
             this.statisticalData.data.forEach((item) => {
@@ -535,7 +535,7 @@ export default {
       });
     },
     exportTxtCoords() {
-      this.$bus.$emit("toolbar-export-txt", this.exportTxt);
+      EventBus.$emit("toolbar-export-txt", this.exportTxt);
     },
     exportCommand(command) {
       if (!this.selection.length) {

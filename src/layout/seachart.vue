@@ -29,7 +29,7 @@
     <div class="seachart-input">
       <input
         class="seachart-2"
-        placeholder=" 请输入项目名称"
+        placeholder="输入项目名称搜索问题点位"
         v-model="msg.projectName"
         @change="seachart"
       />
@@ -173,14 +173,12 @@
       </div>
     </div>
 
-    <div class="leftDiv" v-if="detailShow" :style="{ top: Top + 'rem' }">
+    <!-- <div class="leftDiv" v-if="detailShow" :style="{ top: Top + 'rem' }">
       <detail ref="detailref" @close="close" />
-    </div>
+    </div> -->
     
-    <detailBtn ref="detailBtnref" @changeProjectBtnFun="changeProjectBtnFun" :selectType="selectType"/>
-    <project-word v-if="projectBtnInfoShow.wordShow" @changeProjectBtnFun="changeProjectBtnFun"></project-word>
-    <project-history-info v-if="projectBtnInfoShow.oldInfoShow" @changeProjectBtnFun="changeProjectBtnFun"></project-history-info>
-    <project-analysis v-if="projectBtnInfoShow.analysisShow" @changeProjectBtnFun="changeProjectBtnFun"></project-analysis>
+    <detailBtn v-if="detailShow" ref="detailBtnref"/>
+
     <div
       class="leftDiv"
       v-show="nameShow"
@@ -200,11 +198,12 @@
         <p>{{ item.busDepName }}</p>
       </div>
     </div>
-    <div class="leftDiv lenghtClass" v-if="lenghtList" style="top: 1.5rem">
+    <div class="leftDiv lenghtClass" v-if="lenghtList" style="top: 1.7rem">
       <p v-show="lenghtshow == 'textlist'" @mouseenter="yiruData">
         共{{ tableData.length }}条数据
       </p>
-      <p v-show="lenghtshow == 'textnode'" @click="backlist">返回搜索数据</p>
+      <p v-show="lenghtshow == 'textnode'" @click="backlist"><img class="imgDiv" src="../../static/img/project/fanhui.png"/>返回搜索数据</p>
+      <detail v-show="lenghtshow == 'textnode'" ref="detailref"/>
     </div>
     <div class="shili">
       <v-legend />
@@ -220,9 +219,7 @@ import legend from "./legend";
 import unitselection from "./unitselection";
 import detail from "./detail";
 import detailBtn from "./detailBtn";
-import projectWord from './projectWord';
-import projectHistoryInfo from "./projectHistoryInfo";
-import projectAnalysis from "./projectAnalysis";
+
 import files from "./files";
 import ofthings from "./ofthings";
 export default {
@@ -230,9 +227,7 @@ export default {
     tool,
     detail,
     detailBtn,
-    projectWord,
-    projectHistoryInfo,
-    projectAnalysis,
+
     "v-legend": legend,
     unitselection,
     ofthings,
@@ -241,11 +236,6 @@ export default {
   props: ["compareMapShow"],
   data() {
     return {
-      projectBtnInfoShow:{
-        wordShow:false,
-        oldInfoShow:false,
-        analysisShow:false
-      },
       current: 1,
       size: 20,
       total: 1,
@@ -359,6 +349,10 @@ export default {
           value: "2022",
           label: "2022年",
         },
+        {
+          value: "2023",
+          label: "2023年",
+        },
       ],
       pointList: null, //物联网，空气点儿集合
 
@@ -373,7 +367,7 @@ export default {
         flevel: "", // 项目级别
         pid: "0", //是否包含子项目
         polygonPoint: "", //坐标范围
-        fyear: "2022", //时间
+        fyear: "2023", //时间
       },
       selectType:''
     };
@@ -387,14 +381,14 @@ export default {
     EventBus.$on("show-analysis", (val)=>{
       this.projectBtnInfoShow.analysisShow = val;
     });
-    this.$bus.$on("clearbuildNoName", () => {
+    EventBus.$on("clearbuildNoName", () => {
       this.msg.buildNoName = "";
     });
     if (this.compareMapShow == false) {
       this.fengchao();
     }
 
-    this.$bus.$on("gisBuilber", (data) => {
+    EventBus.$on("gisBuilber", (data) => {
       this.getCsfCheck(data);
       this.Top = 2.1;
       this.detailShow = true;
@@ -403,11 +397,11 @@ export default {
       this.lenghtList = true;
     });
 
-    this.$bus.$on("3dmaker", (data) => {
+    EventBus.$on("3dmaker", (data) => {
       this.latlng = data;
     });
 
-    this.$bus.$on("Ofthings", (type) => {
+    EventBus.$on("Ofthings", (type) => {
       this.ofthingShow = true;
       this.$refs.ofthings.createOfthings(type);
     });
@@ -458,7 +452,7 @@ export default {
     this.$nextTick(function () {
       this.closeSearch();
     });
-    this.$bus.$on("billboardData", (data) => {
+    EventBus.$on("billboardData", (data) => {
       this.getCsfCheck(data);
       this.Top = 2.1;
       this.detailShow = true;
@@ -466,14 +460,12 @@ export default {
       this.showAll = false;
       this.lenghtList = true;
     });
-    this.$bus.$on("changeProjectBtnFun",this.changeProjectBtnFun)
   },
   destroyed() {
-    this.$bus.$off("billboardData");
-    this.$bus.$off("clearbuildNoName");
-    this.$bus.$off("3dmaker");
-    this.$bus.$off("Ofthings");
-    this.$bus.$off("changeProjectBtnFun",this.changeProjectBtnFun)
+    EventBus.$off("billboardData");
+    EventBus.$off("clearbuildNoName");
+    EventBus.$off("3dmaker");
+    EventBus.$off("Ofthings");
   },
   watch: {
     compareMapShow: {
@@ -487,35 +479,6 @@ export default {
     },
   },
   methods: {
-    /**进行项目事件的切换 */
-    changeProjectBtnFun(val){
-      this.selectType = val;
-      if(val==='lcgz'){
-        this.projectBtnInfoShow = {
-          wordShow:true,
-          oldInfoShow:false,
-          analysisShow:false
-        }
-      } else if(val==='lsdb'){
-        this.projectBtnInfoShow = {
-          wordShow:false,
-          oldInfoShow:true,
-          analysisShow:false
-        }
-      } else if(val==='analysis'){
-        this.projectBtnInfoShow = {
-          wordShow:false,
-          oldInfoShow:false,
-          analysisShow:true
-        }
-      } else {
-        this.projectBtnInfoShow = {
-          wordShow:false,
-          oldInfoShow:false,
-          analysisShow:false
-        }
-      }
-    },
     buildNature(val) {
       this.msg.buildNoName = val;
     },
@@ -542,7 +505,7 @@ export default {
           });
         }
         if (this.compareMapShow) {
-          this.$bus.$emit("marker3dplain", lianDianData);
+          EventBus.$emit("marker3dplain", lianDianData);
         } else {
           this.Addapoint(lianDianData);
         }
@@ -580,12 +543,12 @@ export default {
     },
     //时间选择，更改时间
     handerString(val) {
-      this.$bus.$emit("Organizat", val);
+      EventBus.$emit("Organizat", val);
     },
     getpointShow(row) {
       // console.log(row);
       if (this.compareMapShow) {
-        this.$bus.$emit("flyTolist", row);
+        EventBus.$emit("flyTolist", row);
       } else {
         if (row.lng == null || row.lat == null) {
           this.$message("暂无空间位置");
@@ -600,7 +563,7 @@ export default {
           iconUrl: icons,
           iconSize: [50, 50],
         });
-        this.marketLIst = row.marker.getIcon();
+        this.marketLIst = row.marker.options.icon;
         this.market = row.marker;
         row.marker.setIcon(this.myIcon_cust);
       }
@@ -608,7 +571,7 @@ export default {
 
     getpointShowone(row) {
       if (this.compareMapShow) {
-        this.$bus.$emit("flyTolist", row);
+        EventBus.$emit("flyTolist", row);
       } else {
         if (row.lng == null || row.lat == null) {
           this.$message("暂无空间位置");
@@ -622,7 +585,7 @@ export default {
           iconUrl: icons,
           iconSize: [50, 50],
         });
-        this.marketLIst = row.marker.getIcon();
+        this.marketLIst = row.marker.options.icon;
         this.market = row.marker;
         row.marker.setIcon(this.myIcon_cust);
       }
@@ -648,7 +611,7 @@ export default {
     },
     //重置
     getreset() {
-      this.$bus.$emit("clearenminutes");
+      EventBus.$emit("clearenminutes");
       this.msg = {
         projectName: "", //项目名称
         state: "", //工程状态
@@ -659,7 +622,7 @@ export default {
         flevel: "", // 项目级别
         polygonPoint: "", //坐标范围
         buildNoName: "", //建设单位
-        fyear: 2022, //时间
+        fyear: 2023, //时间
       };
     },
     changeActive() {
@@ -723,7 +686,7 @@ export default {
             },
             draw: "honeycomb",
           };
-
+          debugger;
           //创建MapV图层
           this.mapvlayer = new L.supermap.MapVLayer(dataSet, options).addTo(
             hcmap
@@ -740,9 +703,9 @@ export default {
     },
     //点击时间选择关闭其他下拉
     handdate() {
-      this.$bus.$emit("clearent");
-      this.$bus.$emit("clearenminutes");
-      this.$bus.$emit("clearentool");
+      EventBus.$emit("clearent");
+      EventBus.$emit("clearenminutes");
+      EventBus.$emit("clearentool");
     },
     closeSearch() {
       this.showAll = !this.showAll;
@@ -787,6 +750,7 @@ export default {
     //  查询
     getlist(e) {
       let _this = this;
+      debugger
       if (this.compareMapShow) {
         _this.$apiFun.csfMonitor(_this.msg).then((res) => {
           const { code, rows } = res;
@@ -795,7 +759,7 @@ export default {
             _this.detailShow = false;
             _this.nameShow = true;
             _this.showAll = false;
-            _this.$bus.$emit("markerplain", rows);
+            _EventBus.$emit("markerplain", rows);
           } else {
             _this.$message("暂无数据");
           }
@@ -915,6 +879,7 @@ export default {
             _this.$refs.detailref.detailDatalist2({
               progressData: data,
             });
+            _this.$refs.detailBtnref.setProjectData(data);
           }
         });
       // .catch((err) => {
@@ -1024,7 +989,7 @@ export default {
 
 .seachart-input {
   display: flex;
-  width: 355px;
+  width: 405px;
   height: 30px;
 }
 
@@ -1034,23 +999,31 @@ export default {
   outline: none;
   color: #fff;
   width: 400px;
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border: #1d4470 solid 1px;
+  // height: 30px;
+  // background-color: rgba(0, 0, 0, 0.2);
+  // border: #1d4470 solid 1px;
+
+  height: 39px;
+  background: rgba(0,13,22,0.4);
+  border: 1px solid #00D2FF;
 }
 
 .seachart-img {
   position: absolute;
   width: 24px;
   height: 24px;
-  right: 36px;
-  top: 5px;
+  right: 65px;
+  top: 8px;
   cursor: pointer;
 }
 .lenghtClass {
   p {
     color: #00c6ff;
     cursor: pointer;
+  }
+  .imgDiv{
+    top: 2px;
+    position: relative;
   }
 }
 .caidan {
@@ -1062,14 +1035,14 @@ export default {
 
 .leftDiv {
   position: fixed;
-  width: 340px;
+  width: 385px;
   top: 2rem;
   left: 0.9rem;
   color: #000;
   padding: 10px;
-  background: url("../img/kuang2.png") no-repeat;
+  background: url("../../static/img/project/kuang1.png") no-repeat;
   background-size: 100% 100%;
-  background-color: rgba(0, 0, 0, 0.45);
+  // background-color: rgba(0, 0, 0, 0.45);
   .tableList {
     color: #00c6ff;
     margin: 10px 8px;
@@ -1137,8 +1110,13 @@ export default {
   // height: 0.25rem;
   margin-left: 0.0625rem;
   padding: 0.0625rem;
-  background-color: rgba(#176c83, 0.3);
-  border: #00c6ff solid 1px;
+  // background-color: rgba(#176c83, 0.3);
+  // border: #00c6ff solid 1px;
+
+  width: 46px;
+  height: 29px;
+  background: linear-gradient(0deg, rgba(0,198,255,0.4), rgba(0,210,255,0.4));
+  border: 1px solid #00D2FF;
 }
 
 .allDiv {

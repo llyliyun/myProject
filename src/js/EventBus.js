@@ -13,6 +13,6 @@ const install = Vue => {
       }
     }
   });
-  Vue.prototype.$bus = Bus;
+  window.EventBus = Bus;
 };
 export default install;

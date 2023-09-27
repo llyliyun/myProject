@@ -5,8 +5,6 @@ import App from './App'
 import router from './router'
 import Bus from './js/EventBus';
 import Router from 'vue-router';
-import L from "leaflet";
-import '@supermap/iclient-leaflet';
 import locale from 'element-ui/lib/locale/lang/zh-CN';
 import 'animate.css';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -66,4 +64,4 @@ new Vue({
 
 
 const bus = new Vue()
-Vue.prototype.$bus = bus;
+window.EventBus = bus;

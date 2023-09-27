@@ -4,7 +4,7 @@
 
 <script>
   // import L from 'leaflet'
-  import { dynamicMapLayer, tiledMapLayer } from './../../../../static/lib/esri-leaflet-src.js'
+  // import { dynamicMapLayer, tiledMapLayer } from './../../../../static/lib/esri-leaflet-src.js'
   import mixin from './../mixins/mixin'
 
   const events = [

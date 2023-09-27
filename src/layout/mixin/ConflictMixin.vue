@@ -42,7 +42,7 @@
           let userkey = arr[arr.length - 1]
           if(arr.length && serviceId){
             if(!event || event.target.checked === undefined ||event.target.checked){
-              this.$bus.$emit('load-layer-service', serviceId, false, userkey);
+              EventBus.$emit('load-layer-service', serviceId, false, userkey);
             } else {
               this.removeLayer(JSON.parse(JSON.stringify(layer)));
             }
@@ -126,7 +126,7 @@
           }
         }
           this._loadingService && this._loadingService.close();
-          this.$bus.$emit("query-finish-geo", recode, geometry, "")
+          EventBus.$emit("query-finish-geo", recode)
       },
       
       getGeometry() {
@@ -184,7 +184,7 @@
                   features:[fea]
                 }
               }
-              this.$bus.$emit("query-geo", [conflictGeo])
+              EventBus.$emit("query-geo", [conflictGeo])
             }
           }else{
             conflictGeo = this.buildGeojson([operateRegions.getLatLngs()],operateRegions.toGeoJSON(),"")
